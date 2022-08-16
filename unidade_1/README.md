@@ -6,7 +6,7 @@ Local para postar a atividade da unidade 1.
 
 ## Avaliação
 
-Descrição:  
+Descrição: descreveram o hardware acelerômetro, IHC e IUT.  
 
 Pontos positivos:  
 
