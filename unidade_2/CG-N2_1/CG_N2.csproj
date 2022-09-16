@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+<!-- MacOS
+  <PackageReference Include="OpenTK" Version="3.2.0"/>
+-->    
+<!-- Windows
+  <PackageReference Include="OpenTK.NetCore" Version="*" />
+-->
+  <PackageReference Include="OpenTK.NetCore" Version="*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CG_Biblioteca\CG_Biblioteca.csproj" />
+  </ItemGroup>
+
+
+</Project>

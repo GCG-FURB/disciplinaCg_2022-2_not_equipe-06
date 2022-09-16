@@ -1,3 +1,3 @@
-# Unidade 2
+# Diagrama de Classes
 
-Local para postar a atividade da unidade 2_1.  
+![Diagrama de Classes](./svg/plantuml/CG_N2_Completo.svg "Diagrama de Classes")  
