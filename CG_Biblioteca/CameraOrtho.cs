@@ -11,6 +11,9 @@ namespace CG_Biblioteca
   /// </summary>
   public class CameraOrtho
   {
+    private double amplitudeX { get; set; }
+    private double amplitudeY { get; set; }
+
     private double xMin, xMax, yMin, yMax, zMin, zMax;
     //                                         near, far
     /// <summary>
@@ -24,6 +27,8 @@ namespace CG_Biblioteca
     /// <param name="zMax"></param>
     public CameraOrtho(double xMin = 0, double xMax = 600, double yMin = 0, double yMax = 600, double zMin = -1, double zMax = 1)
     {
+      this.amplitudeX = xMax;
+      this.amplitudeY = yMax;
       this.xMin = xMin; this.xMax = xMax;
       this.yMin = yMin; this.yMax = yMax;
       this.zMin = zMin; this.zMax = zMax;
@@ -39,15 +44,43 @@ namespace CG_Biblioteca
     public void PanDireita() { xMin -= 2; xMax -= 2; }
     public void PanCima() { yMin -= 2; yMax -= 2; }
     public void PanBaixo() { yMin += 2; yMax += 2; }
-    //TODO: falta testar os limites de zoom    
+
     public void ZoomIn()
     {
-      xMin += 2; xMax -= 2; yMin += 2; yMax -= 2;
+      if(xMin < 0) {
+        xMin += 2;
+      }
+
+      if(xMax > 0) {
+        xMax -= 2;
+      }
+
+      if(yMin < 0) {
+        yMin += 2;
+      }
+
+      if(yMax > 0) {
+        yMax -= 2;
+      }
     }
-    //TODO: falta testar os limites de zoom    
+
     public void ZoomOut()
     {
-      xMin -= 2; xMax += 2; yMin -= 2; yMax += 2;
+      if(xMin > amplitudeX * -1) {
+        xMin -= 2;
+      }
+
+      if(xMax < amplitudeX) {
+        xMax += 2;
+      }
+
+      if(yMin > amplitudeY * -1) {
+        yMin -= 2;
+      }
+
+      if(yMax < amplitudeY) {
+        yMax += 2;
+      }
     }
 
     //TODO: melhorar para exibir não só a lista de pontos (geometria), mas também a topologia ... poderia ser listado estilo OBJ da Wavefrom
