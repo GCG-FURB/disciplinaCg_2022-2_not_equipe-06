@@ -43,10 +43,10 @@ namespace gcgcg
     private Privado_Circulo obj_Circulo;
 #endif
 
-    private void DesenharCirculo(Ponto4D pontoCentral, int raio, Color cor, int tamanho, int pontos = 72, PrimitiveType primitivo = PrimitiveType.Points)
+    private void DesenharCirculo(Ponto4D pontoCentral, int raio, Cor cor, int tamanho, int pontos = 72, PrimitiveType primitivo = PrimitiveType.Points)
     {
       Circulo circulo = new Circulo(Convert.ToChar("C"), null, pontoCentral, raio, pontos, primitivo);
-      circulo.ObjetoCor.CorR = cor.R; circulo.ObjetoCor.CorG = cor.G; circulo.ObjetoCor.CorB = cor.B;
+      circulo.ObjetoCor.CorR = cor.CorR; circulo.ObjetoCor.CorG = cor.CorG; circulo.ObjetoCor.CorB = cor.CorB;
       circulo.PrimitivaTamanho = tamanho;
       objetosLista.Add(circulo);
     } 
@@ -59,7 +59,7 @@ namespace gcgcg
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
-      DesenharCirculo(new Ponto4D(0, 0), 100, Color.Yellow, 5);
+      DesenharCirculo(new Ponto4D(0, 0), 100, new Cor(255, 255, 0, 255), 5);
 
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
