@@ -134,28 +134,29 @@ namespace gcgcg
             pontoSpline2 = new Ponto(Convert.ToChar("B"), null, ponto2);
             pontoSpline3 = new Ponto(Convert.ToChar("C"), null, ponto3);
             pontoSpline4 = new Ponto(Convert.ToChar("D"), null, ponto4);
+
             objetosLista.Add(pontoSpline1);
             objetosLista.Add(pontoSpline2);
             objetosLista.Add(pontoSpline3);
             objetosLista.Add(pontoSpline4);
 
             SegReta segReta1 = new SegReta(Convert.ToChar("E"), null, ponto1, ponto2);
-            segReta1.PrimitivaTamanho = 5;
-            segReta1.ObjetoCor.CorR = 224; segReta1.ObjetoCor.CorG = 255; segReta1.ObjetoCor.CorB = 255;
+            segReta1.PrimitivaTamanho = 2;
+            segReta1.ObjetoCor.CorR = 188; segReta1.ObjetoCor.CorG = 17; segReta1.ObjetoCor.CorB = 214;
             objetosLista.Add(segReta1);
 
             SegReta segReta2 = new SegReta(Convert.ToChar("F"), null, ponto2, ponto3);
-            segReta2.PrimitivaTamanho = 5;
-            segReta2.ObjetoCor.CorR = 224; segReta2.ObjetoCor.CorG = 255; segReta2.ObjetoCor.CorB = 255;
+            segReta2.PrimitivaTamanho = 2;
+            segReta2.ObjetoCor.CorR = 188; segReta2.ObjetoCor.CorG = 17; segReta2.ObjetoCor.CorB = 214;
             objetosLista.Add(segReta2);
 
             SegReta segReta3 = new SegReta(Convert.ToChar("G"), null, ponto3, ponto4);
-            segReta3.PrimitivaTamanho = 5;
-            segReta3.ObjetoCor.CorR = 224; segReta3.ObjetoCor.CorG = 255; segReta3.ObjetoCor.CorB = 255;
+            segReta3.PrimitivaTamanho = 2;
+            segReta3.ObjetoCor.CorR = 188; segReta3.ObjetoCor.CorG = 17; segReta3.ObjetoCor.CorB = 214;
             objetosLista.Add(segReta3);
 
             spline = new Spline(Convert.ToChar("H"), null, ponto1, ponto2, ponto3, ponto4, 10);
-            spline.PrimitivaTamanho = 5;
+            spline.PrimitivaTamanho = 4;
             spline.ObjetoCor.CorR = 255; spline.ObjetoCor.CorG = 255; spline.ObjetoCor.CorB = 0;
             objetosLista.Add(spline);
 
