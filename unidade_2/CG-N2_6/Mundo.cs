@@ -141,18 +141,18 @@ namespace gcgcg
             objetosLista.Add(pontoSpline4);
 
             SegReta segReta1 = new SegReta(Convert.ToChar("E"), null, ponto1, ponto2);
-            segReta1.PrimitivaTamanho = 2;
-            segReta1.ObjetoCor.CorR = 188; segReta1.ObjetoCor.CorG = 17; segReta1.ObjetoCor.CorB = 214;
+            segReta1.PrimitivaTamanho = 4;
+            segReta1.ObjetoCor.CorR = 0; segReta1.ObjetoCor.CorG = 255; segReta1.ObjetoCor.CorB = 255;
             objetosLista.Add(segReta1);
 
             SegReta segReta2 = new SegReta(Convert.ToChar("F"), null, ponto2, ponto3);
-            segReta2.PrimitivaTamanho = 2;
-            segReta2.ObjetoCor.CorR = 188; segReta2.ObjetoCor.CorG = 17; segReta2.ObjetoCor.CorB = 214;
+            segReta2.PrimitivaTamanho = 4;
+            segReta2.ObjetoCor.CorR = 0; segReta2.ObjetoCor.CorG = 255; segReta2.ObjetoCor.CorB = 255;
             objetosLista.Add(segReta2);
 
             SegReta segReta3 = new SegReta(Convert.ToChar("G"), null, ponto3, ponto4);
-            segReta3.PrimitivaTamanho = 2;
-            segReta3.ObjetoCor.CorR = 188; segReta3.ObjetoCor.CorG = 17; segReta3.ObjetoCor.CorB = 214;
+            segReta3.PrimitivaTamanho = 4;
+            segReta3.ObjetoCor.CorR = 0; segReta3.ObjetoCor.CorG = 255; segReta3.ObjetoCor.CorB = 255;
             objetosLista.Add(segReta3);
 
             spline = new Spline(Convert.ToChar("H"), null, ponto1, ponto2, ponto3, ponto4, 10);
