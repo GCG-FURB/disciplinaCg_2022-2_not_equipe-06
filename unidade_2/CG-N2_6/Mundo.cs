@@ -169,11 +169,11 @@ namespace gcgcg
                 return;
             }
 
-            pontoSpline1.cor = Color.Black;
-            pontoSpline2.cor = Color.Black;
-            pontoSpline3.cor = Color.Black;
-            pontoSpline4.cor = Color.Black;
-            ponto.cor = Color.Red;
+            pontoSpline1.cor = new Cor(0, 0, 0, 255);
+            pontoSpline2.cor = new Cor(0, 0, 0, 255);
+            pontoSpline3.cor = new Cor(0, 0, 0, 255);
+            pontoSpline4.cor = new Cor(0, 0, 0, 255);
+            ponto.cor = new Cor(255, 0, 0, 255);
             pontoSplineSelecionado = ponto;
         }
 
@@ -243,13 +243,41 @@ namespace gcgcg
             else if (e.Key == Key.Escape)
                 Exit();
             else if (e.Key == Key.E)
+            {
+                if(pontoSplineSelecionado != null) {
+                    pontoSplineSelecionado.ponto.X--;
+                    return;
+                }
+
                 camera.PanEsquerda();
-            else if (e.Key == Key.D)
+            }
+            else if (e.Key == Key.D) {
+                if(pontoSplineSelecionado != null) {
+                    pontoSplineSelecionado.ponto.X++;
+                    return;
+                }
+
                 camera.PanDireita();
-            else if (e.Key == Key.C)
+            }
+                
+            else if (e.Key == Key.C) {
+                if(pontoSplineSelecionado != null) {
+                    pontoSplineSelecionado.ponto.Y++;
+                    return;
+                }
+
                 camera.PanCima();
-            else if (e.Key == Key.B)
+            }
+                
+            else if (e.Key == Key.B) {
+                if(pontoSplineSelecionado != null) {
+                    pontoSplineSelecionado.ponto.Y--;
+                    return;
+                }
+
                 camera.PanBaixo();
+            }
+                
             else if (e.Key == Key.I)
                 camera.ZoomIn();
             else if (e.Key == Key.O)
