@@ -273,6 +273,16 @@ namespace gcgcg
                 SelecionarPonto(pontoSpline3);
             else if (e.Key == Key.Number4 || e.Key == Key.Keypad4)
                 SelecionarPonto(pontoSpline4);
+            else if (e.Key == Key.Plus || e.Key == Key.KeypadAdd)
+            {
+                if (spline.quantidadePontos <= 100)
+                    spline.quantidadePontos++;
+            }
+            else if (e.Key == Key.Minus || e.Key == Key.KeypadSubtract)
+            {
+                if (spline.quantidadePontos > 1)
+                    spline.quantidadePontos--;
+            }
             else if (e.Key == Key.E)
             {
                 Console.WriteLine("--- Objetos / Pontos: ");
