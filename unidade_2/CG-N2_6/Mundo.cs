@@ -45,6 +45,7 @@ namespace gcgcg
         private Ponto pontoSpline4;
         private Ponto pontoSplineSelecionado;
         private Spline spline;
+        private int splineDefaultPTS = 10;
 
 #if CG_Privado
     private Privado_SegReta obj_SegReta;
@@ -155,7 +156,7 @@ namespace gcgcg
             segReta3.ObjetoCor.CorR = 0; segReta3.ObjetoCor.CorG = 255; segReta3.ObjetoCor.CorB = 255;
             objetosLista.Add(segReta3);
 
-            spline = new Spline(Convert.ToChar("H"), null, ponto1, ponto2, ponto3, ponto4, 10);
+            spline = new Spline(Convert.ToChar("H"), null, ponto1, ponto2, ponto3, ponto4, splineDefaultPTS);
             spline.PrimitivaTamanho = 4;
             spline.ObjetoCor.CorR = 255; spline.ObjetoCor.CorG = 255; spline.ObjetoCor.CorB = 0;
             objetosLista.Add(spline);
@@ -283,6 +284,8 @@ namespace gcgcg
                 if (spline.quantidadePontos > 1)
                     spline.quantidadePontos--;
             }
+            else if (e.Key == Key.R)
+                spline.quantidadePontos = splineDefaultPTS;
             else if (e.Key == Key.E)
             {
                 Console.WriteLine("--- Objetos / Pontos: ");
