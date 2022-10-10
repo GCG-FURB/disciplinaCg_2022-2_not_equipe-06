@@ -47,6 +47,7 @@ namespace gcgcg
         private Spline spline;
         private int splineDefaultPTS = 10;
         private int raioCirculo = 150;
+        private int raioCirculo2 = 150 * 150;
         private Cor CorQuadrado = new Cor(255, 0, 255, 255);
         private Cor corPreta = new Cor(0, 0, 0, 255);
         private Cor corRoxa = new Cor(255, 0, 255, 255);
@@ -204,7 +205,7 @@ namespace gcgcg
 
         public int getDistanceEuclidian(Ponto4D ponto1, Ponto4D ponto2)
         {
-            return (int)Math.Sqrt(Math.Pow(ponto1.X - ponto2.X, 2) + Math.Pow(ponto1.Y - ponto2.Y, 2));
+            return (int)(Math.Pow(ponto1.X - ponto2.X, 2) + Math.Pow(ponto1.Y - ponto2.Y, 2));
         }
 
         public void isInsideBbox(Ponto4D ponto)
@@ -221,6 +222,12 @@ namespace gcgcg
                 this.CorQuadrado.CorG = 255;
                 this.CorQuadrado.CorB = 0;
             }
+        }
+        public void trocaCorFinal()
+        {
+            this.CorQuadrado.CorR = 0;
+            this.CorQuadrado.CorG = 255;
+            this.CorQuadrado.CorB = 255;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -295,9 +302,12 @@ namespace gcgcg
                     pontoSplineSelecionado.ponto.X--;
                     return;
                 }
-                if (getDistanceEuclidian(pontoMeioFixo, pontoMeio) < raioCirculo)
-                    this.pontoMeio.X--;
                 isInsideBbox(this.pontoMeio);
+                if (getDistanceEuclidian(pontoMeioFixo, pontoMeio) < raioCirculo2)
+                    this.pontoMeio.X--;
+                else
+                    this.trocaCorFinal();
+
                 // camera.PanEsquerda();
             }
             else if (e.Key == Key.D)
@@ -307,9 +317,13 @@ namespace gcgcg
                     pontoSplineSelecionado.ponto.X++;
                     return;
                 }
-                if (getDistanceEuclidian(pontoMeioFixo, pontoMeio) < raioCirculo)
-                    this.pontoMeio.X++;
                 isInsideBbox(this.pontoMeio);
+                if (getDistanceEuclidian(pontoMeioFixo, pontoMeio) < raioCirculo2)
+                {
+                    this.pontoMeio.X++;
+                }
+                else
+                    this.trocaCorFinal();
                 // camera.PanDireita();
             }
 
@@ -320,9 +334,11 @@ namespace gcgcg
                     pontoSplineSelecionado.ponto.Y++;
                     return;
                 }
-                if (getDistanceEuclidian(pontoMeioFixo, pontoMeio) < raioCirculo)
-                    this.pontoMeio.Y++;
                 isInsideBbox(this.pontoMeio);
+                if (getDistanceEuclidian(pontoMeioFixo, pontoMeio) < raioCirculo2)
+                    this.pontoMeio.Y++;
+                else
+                    this.trocaCorFinal();
                 // camera.PanCima();
             }
 
@@ -333,12 +349,18 @@ namespace gcgcg
                     pontoSplineSelecionado.ponto.Y--;
                     return;
                 }
-                if (getDistanceEuclidian(pontoMeioFixo, pontoMeio) < raioCirculo)
-                    this.pontoMeio.Y--;
                 isInsideBbox(this.pontoMeio);
+                if (getDistanceEuclidian(pontoMeioFixo, pontoMeio) < raioCirculo2)
+                    this.pontoMeio.Y--;
+                else
+                    this.trocaCorFinal();
                 // camera.PanBaixo();
             }
-
+            else if (e.Key == Key.R)
+            {
+                this.pontoMeio.X = 300;
+                this.pontoMeio.Y = 300;
+            }
             else if (e.Key == Key.I)
                 camera.ZoomIn();
             else if (e.Key == Key.O)
@@ -373,8 +395,6 @@ namespace gcgcg
                 if (spline.quantidadePontos > 1)
                     spline.quantidadePontos--;
             }
-            else if (e.Key == Key.R)
-                spline.quantidadePontos = splineDefaultPTS;
             else if (e.Key == Key.E)
             {
                 Console.WriteLine("--- Objetos / Pontos: ");
