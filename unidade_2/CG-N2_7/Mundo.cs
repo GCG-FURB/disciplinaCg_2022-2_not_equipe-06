@@ -360,6 +360,10 @@ namespace gcgcg
             {
                 this.pontoMeio.X = 300;
                 this.pontoMeio.Y = 300;
+
+                this.CorQuadrado.CorR = 255;
+                this.CorQuadrado.CorG = 0;
+                this.CorQuadrado.CorB = 255;
             }
             else if (e.Key == Key.I)
                 camera.ZoomIn();
@@ -421,6 +425,18 @@ namespace gcgcg
             {
                 objetoSelecionado.PontosUltimo().X = mouseX;
                 objetoSelecionado.PontosUltimo().Y = mouseY;
+            }
+
+            if (e.Mouse.IsButtonDown(MouseButton.Left))
+            {
+                isInsideBbox(this.pontoMeio);
+                if (getDistanceEuclidian(pontoMeioFixo, pontoMeio) < raioCirculo2)
+                {
+                    this.pontoMeio.X = mouseX;
+                    this.pontoMeio.Y = mouseY;
+                }
+                else
+                    this.trocaCorFinal();
             }
         }
 
