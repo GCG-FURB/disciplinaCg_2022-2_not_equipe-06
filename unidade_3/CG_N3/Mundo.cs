@@ -106,7 +106,10 @@ namespace gcgcg
 
         protected void SelecionarObjeto()
         {
-
+            foreach(Objeto objeto in objetosLista)
+            {
+                // Encontrar objeto a partir de mouseX e mouseY
+            }
         }
 
         protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
