@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 #_Meus Ignores
+unidade_3/CG_N3/CG_N3.sln
 thumbs.db
 desktop.ini
 .DS_Store

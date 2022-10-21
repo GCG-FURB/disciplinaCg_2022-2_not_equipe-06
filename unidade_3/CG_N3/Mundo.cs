@@ -14,7 +14,11 @@ namespace gcgcg
     {
         private static Mundo instanciaMundo = null;
 
-        private Mundo(int width, int height) : base(width, height) { }
+        private float scale;
+
+        private Mundo(int width, int height) : base(width, height) {
+            scale = ClientSize.Width / (float)Size.Width;
+                }
 
         public static Mundo GetInstance(int width, int height)
         {
@@ -100,9 +104,22 @@ namespace gcgcg
             this.SwapBuffers();
         }
 
+        protected void SelecionarObjeto()
+        {
+
+        }
+
         protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
         {
-            if (e.Key == Key.H)
+            if(e.Key == Key.A)
+            {
+                SelecionarObjeto();
+            }
+            else if(e.Key == Key.C)
+            {
+                objetosLista.Remove(objetoSelecionado);
+            }
+            else if (e.Key == Key.H)
                 Utilitario.AjudaTeclado();
             else if (e.Key == Key.Escape)
                 Exit();
@@ -183,12 +200,14 @@ namespace gcgcg
         //TODO: não está considerando o NDC
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
-            mouseX = e.Position.X; mouseY = 600 - e.Position.Y; // Inverti eixo Y
+            // Arrumar escala em telas de DPI elevado
+            mouseX = (int) Math.Round(e.Position.X / scale); mouseY = 600 - (int) Math.Round(e.Position.Y / scale); // Inverti eixo Y
             if (objetoNovo != null)
             {
                 objetoNovo.PontosUltimo().X = mouseX;
                 objetoNovo.PontosUltimo().Y = mouseY;
             }
+
         }
 
 #if CG_Gizmo

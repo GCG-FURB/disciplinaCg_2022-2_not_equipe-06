@@ -40,17 +40,19 @@ namespace gcgcg
 
     public void Desenhar()
     {
-      GL.PushMatrix();                                    // N3-Exe14: grafo de cena
+#if CG_OpenGL
+      GL.PushMatrix();                                    // N3-Exe12: grafo de cena
       GL.MultMatrix(matriz.ObterDados());
       GL.Color3(objetoCor.CorR, objetoCor.CorG, objetoCor.CorB);
       GL.LineWidth(primitivaTamanho);
       GL.PointSize(primitivaTamanho);
+#endif
       DesenharGeometria();
       for (var i = 0; i < objetosLista.Count; i++)
       {
         objetosLista[i].Desenhar();
       }
-      GL.PopMatrix();                                     // N3-Exe14: grafo de cena
+      GL.PopMatrix();                                     // N3-Exe12: grafo de cena
     }
     protected abstract void DesenharGeometria();
     public void FilhoAdicionar(Objeto filho)
