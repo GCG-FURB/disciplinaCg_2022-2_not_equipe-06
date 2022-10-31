@@ -41,13 +41,11 @@ namespace gcgcg
 
     public void Desenhar()
     {
-#if CG_OpenGL
       GL.PushMatrix();                                    // N3-Exe12: grafo de cena
       GL.MultMatrix(matriz.ObterDados());
       GL.Color3(objetoCor.CorR, objetoCor.CorG, objetoCor.CorB);
       GL.LineWidth(primitivaTamanho);
       GL.PointSize(primitivaTamanho);
-#endif
       DesenharGeometria();
       for (var i = 0; i < objetosLista.Count; i++)
       {

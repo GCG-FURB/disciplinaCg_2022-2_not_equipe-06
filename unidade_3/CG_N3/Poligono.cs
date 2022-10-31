@@ -14,7 +14,6 @@ namespace gcgcg
       GL.Begin(base.PrimitivaTipo);
       foreach (Ponto4D pto in pontosLista)
       {
-        GL.Color3(ObjetoCor.CorR, ObjetoCor.CorG, ObjetoCor.CorB);
         GL.Vertex2(pto.X, pto.Y);
       }
       GL.End();
