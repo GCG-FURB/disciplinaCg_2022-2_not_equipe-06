@@ -58,6 +58,7 @@ namespace gcgcg
             objetoNovo.PontosAdicionar(new Ponto4D(170, 356));
             objetoSelecionado = objetoNovo;
             objetoNovo = null;
+            objetoSelecionado.ObjetoCor = new Cor(0, 0, 255, 1);
 
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
@@ -214,6 +215,19 @@ namespace gcgcg
                     objetoSelecionado.RotacaoZBBox(-10);
                 else if (e.Key == Key.Number9)
                     objetoSelecionado = null;                     // desmacar objeto selecionado
+                else if (e.Key == Key.R)
+                {
+                    // Alter a cor do objeto selecionado para vemelho
+                    objetoSelecionado.ObjetoCor = new Cor(255, 0, 0, 1);
+                }
+                else if (e.Key == Key.G)
+                {
+                    objetoSelecionado.ObjetoCor = new Cor(0, 255, 0, 1);
+                }
+                else if (e.Key == Key.B)
+                {
+                    objetoSelecionado.ObjetoCor = new Cor(0, 0, 255, 1);
+                }
                 else
                     Console.WriteLine(" __ Tecla não implementada.");
             }
