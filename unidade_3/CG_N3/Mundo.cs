@@ -112,11 +112,32 @@ namespace gcgcg
             }
         }
 
+        private void AlternarForma(Objeto objeto)
+        {
+            objeto.PrimitivaTipo = objeto.PrimitivaTipo.Equals(PrimitiveType.LineLoop) ? PrimitiveType.LineStrip : PrimitiveType.LineLoop;
+        }
+
+        private void AlternarFormaSelecionado()
+        {
+            if(objetoNovo != null)
+            {
+                AlternarForma(objetoNovo);
+            }
+            else if(objetoSelecionado != null)
+            {
+                AlternarForma(objetoSelecionado);
+            }
+        }
+
         protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
         {
             if(e.Key == Key.A)
             {
                 SelecionarObjeto();
+            }
+            if(e.Key == Key.S)
+            {
+                AlternarFormaSelecionado();
             }
             else if(e.Key == Key.C)
             {
