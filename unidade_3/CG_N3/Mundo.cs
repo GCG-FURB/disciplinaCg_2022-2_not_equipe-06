@@ -2,6 +2,7 @@
 // #define CG_Privado
 
 using System;
+using System.Linq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
@@ -110,7 +111,17 @@ namespace gcgcg
         {
             foreach(Objeto objeto in objetosLista)
             {
-                // Encontrar objeto a partir de mouseX e mouseY
+                var verificaObjeto = (ObjetoGeometria)objeto;
+                var clicouDentro = verificaObjeto.VerificarSeCoordenadaEstaDentro(new Ponto4D(mouseX, mouseY));
+                if (clicouDentro.EstaDentro)
+                {
+                    objetoSelecionado = clicouDentro.poligonoSelecionado;
+                    return;
+                }
+                else
+                {
+                    objetoSelecionado = null;
+                }
             }
         }
 
@@ -144,6 +155,13 @@ namespace gcgcg
             else if(e.Key == Key.C)
             {
                 objetosLista.Remove(objetoSelecionado);
+                if(objetosLista.Count > 0)
+                {
+                    objetoSelecionado = (ObjetoGeometria)objetosLista.Last();
+                } else
+                {
+                    objetoSelecionado = null;
+                }
             }
             else if (e.Key == Key.H)
                 Utilitario.AjudaTeclado();

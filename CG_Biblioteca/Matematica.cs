@@ -26,6 +26,16 @@ namespace CG_Biblioteca
     {
       return (raio * Math.Cos(Math.PI * 45 / 180.0));
     }
+
+    public static double CalculaXiScanLine(double x1, double x2, double ti)
+      {
+          return (x1 + (x2 - x1) * ti);
+      }
+
+      public static double InterseccaoScanLine(double yi, double y1, double y2)
+      {
+          return ((yi - y1) / (y2 - y1));
+      }
     
   }
 }
