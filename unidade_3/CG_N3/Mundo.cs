@@ -282,6 +282,10 @@ namespace gcgcg
             {
                 objetoNovo.PontosUltimo().X = mouseX;
                 objetoNovo.PontosUltimo().Y = mouseY;
+            } else if(verticeSelecionado != null)
+                {
+                verticeSelecionado.X = mouseX;
+                verticeSelecionado.Y = mouseY;
             }
 
         }
