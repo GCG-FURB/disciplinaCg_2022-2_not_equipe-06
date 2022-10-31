@@ -31,6 +31,7 @@ namespace gcgcg
         protected List<Objeto> objetosLista = new List<Objeto>();
         private ObjetoGeometria objetoSelecionado = null;
         private char objetoId = '@';
+        private Ponto4D verticeSelecionado = null;
         private bool bBoxDesenhar = false;
         int mouseX, mouseY;   //TODO: achar método MouseDown para não ter variável Global
         private Poligono objetoNovo = null;
@@ -184,6 +185,25 @@ namespace gcgcg
             {
                 if (e.Key == Key.M)
                     Console.WriteLine(objetoSelecionado.Matriz);
+                if (e.Key == Key.V)
+                {
+                    if (verticeSelecionado == null)
+                    {
+                        verticeSelecionado = objetoSelecionado.CalculaPontoProximo(new Ponto4D(mouseX, mouseY));
+                    }
+                    else
+                    {
+                        verticeSelecionado = null;
+                    }
+                }
+                else if (e.Key == Key.D)
+                {
+                    // Remover vértice selecionado
+                    if (verticeSelecionado != null)
+                    {
+                        objetoSelecionado.RemoverPonto(verticeSelecionado);
+                    }
+                }
                 else if (e.Key == Key.P)
                     Console.WriteLine(objetoSelecionado);
                 else if (e.Key == Key.I)

@@ -38,7 +38,30 @@ namespace gcgcg
       pontosLista.Clear();
     }
 
-    public Ponto4D PontosUltimo()
+    public Ponto4D CalculaPontoProximo(Ponto4D ptoInformado)
+    {
+        // Ponto4D ptoInformadoCalculado = new Ponto4D((ptoInformado.X * ptoInformado.X), (ptoInformado.Y * ptoInformado.Y));
+        Ponto4D ptoMaisProximo = null;
+        double distanciaPtoMaisProximo = double.MaxValue;
+        foreach (var pto in pontosLista)
+        {
+            double distancia = ((ptoInformado.X - pto.X) * (ptoInformado.X - pto.X) + (ptoInformado.Y - pto.Y) * (ptoInformado.Y - pto.Y));
+            if (distancia < distanciaPtoMaisProximo)
+            {
+                distanciaPtoMaisProximo = distancia;
+                ptoMaisProximo = pto;
+            }
+        }
+
+        return ptoMaisProximo;
+    }
+
+    public void RemoverPonto(Ponto4D pto)
+    {
+        pontosLista.Remove(pto);
+    }
+
+        public Ponto4D PontosUltimo()
     {
       return pontosLista[pontosLista.Count - 1];
     }
