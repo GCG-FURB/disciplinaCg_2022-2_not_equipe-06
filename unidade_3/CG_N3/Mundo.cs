@@ -60,7 +60,6 @@ namespace gcgcg
             objetoNovo.PontosAdicionar(new Ponto4D(170, 356));
             objetoSelecionado = objetoNovo;
             objetoNovo = null;
-            objetoSelecionado.ObjetoCor = new Cor(0, 0, 255, 1);
 
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
@@ -148,17 +147,28 @@ namespace gcgcg
             {
                 SelecionarObjeto();
             }
-            if(e.Key == Key.S)
+            else if (e.Key == Key.S)
             {
                 AlternarFormaSelecionado();
             }
-            else if(e.Key == Key.C)
+            else if (e.Key == Key.C)
             {
+                foreach (Objeto objeto in objetosLista)
+                {
+                    if (objeto.ObterObjetosFilhos().Contains(objetoSelecionado))
+                    {
+                        objeto.FilhoRemover(objetoSelecionado);
+                        objetoSelecionado = (ObjetoGeometria)objeto;
+                        return;
+                    }
+                }
+
                 objetosLista.Remove(objetoSelecionado);
-                if(objetosLista.Count > 0)
+                if (objetosLista.Count > 0)
                 {
                     objetoSelecionado = (ObjetoGeometria)objetosLista.Last();
-                } else
+                }
+                else
                 {
                     objetoSelecionado = null;
                 }
@@ -192,7 +202,15 @@ namespace gcgcg
                 {
                     objetoId = Utilitario.charProximo(objetoId);
                     objetoNovo = new Poligono(objetoId, null);
-                    objetosLista.Add(objetoNovo);
+
+                    if (objetoSelecionado != null)
+                    {
+                        objetoSelecionado.FilhoAdicionar(objetoNovo);
+                    } else
+                    {
+                        objetosLista.Add(objetoNovo);
+                    }
+                    
                     objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));
                     objetoNovo.PontosAdicionar(new Ponto4D(mouseX, mouseY));  // N3-Exe6: "troque" para deixar o rastro
                 }
