@@ -312,6 +312,7 @@ namespace gcgcg
     {
         static void Main(string[] args)
         {
+            ToolkitOptions.Default.EnableHighResolution = false;
             Mundo window = Mundo.GetInstance(600, 600);
             window.Title = "CG_N3";
             window.Run(1.0 / 60.0);
