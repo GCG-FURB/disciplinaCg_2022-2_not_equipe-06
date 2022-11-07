@@ -1,0 +1,14 @@
+@startuml
+abstract class ObjetoGeometria {
+    + ObjetoGeometria(rotulo:char, paiRef:Objeto)
+    + PontosAdicionar(pto:Ponto4D) : void
+    + PontosRemoverUltimo() : void
+    + CalculaPontoProximo(ptoInformado:Ponto4D) : Ponto4D
+    + RemoverPonto(pto:Ponto4D) : void
+    + PontosUltimo() : Ponto4D
+    + VerificarSeCoordenadaEstaDentro(coordenada:Ponto4D) : (bool EstaDentro, ObjetoGeometria poligonoSelecionado)
+    + PontosAlterar(pto:Ponto4D, posicao:int) : void
+    + <<override>> ToString() : string
+}
+Objeto <|-- ObjetoGeometria
+@enduml
