@@ -62,6 +62,7 @@ namespace gcgcg
             objetoSelecionado = character;
 
             objetoSelecionado.Translacao(-10, 'z');
+            objetoSelecionado.Translacao(11, 'x');
             objetoSelecionado.Rotacao(180, 'y');
 
 #if CG_Privado  //FIXME: arrumar os outros objetos
@@ -84,7 +85,7 @@ namespace gcgcg
       obj_Cone.Translacao(6, 'x');
 #endif
 
-            GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+            GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
         }
@@ -94,7 +95,7 @@ namespace gcgcg
 
             GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
 
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(camera.Fovy, Width / (float)Height, camera.Near, 500.0f);
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(camera.Fovy, Width / (float)Height, camera.Near, 100.0f);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadMatrix(ref projection);
         }
@@ -107,8 +108,9 @@ namespace gcgcg
         {
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            // Matrix4 modelview = Matrix4.LookAt(camera.Eye, camera.At, camera.Up);
-            Matrix4 modelview = Matrix4.LookAt(new Vector3(-16, 10, -32), camera.At, camera.Up);
+            // Matrix4 modelview = Matrix4.LookAt(camera.Eye, camera.At, camera.Up); // Default
+            // Matrix4 modelview = Matrix4.LookAt(new Vector3(-16, 10, -32), camera.At, camera.Up); // DevMode
+            Matrix4 modelview = Matrix4.LookAt(new Vector3(12, 14, -42), new Vector3(21, 5, 11), camera.Up); // GameMode
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref modelview);
 #if CG_Gizmo
@@ -147,6 +149,20 @@ namespace gcgcg
             else if (e.Key == Key.Plus) deslocamento++;
             else if (e.Key == Key.C) menuSelecao = "[menu] C: Câmera";
             else if (e.Key == Key.O) menuSelecao = "[menu] O: Objeto";
+
+            // Menu: seleção
+            else if (menuSelecao.Equals("[menu] C: Câmera"))
+            {
+                camera.MenuTecla(e.Key, menuEixoSelecao, deslocamento);
+                Console.WriteLine(camera.Eye);
+                Console.WriteLine(camera.At);
+            }
+            else if (menuSelecao.Equals("[menu] O: Objeto"))
+            {
+                if (objetoSelecionado != null) objetoSelecionado.MenuTecla(e.Key, menuEixoSelecao, deslocamento, bBoxDesenhar);
+                else Console.WriteLine(" ... Objeto NÃO selecionado.");
+            }
+            // Menu: seleção
 
             // Movimentação do Personagem 
             else if (e.Key == Key.W) // Para frente
@@ -227,19 +243,6 @@ namespace gcgcg
             }
             // Movimentação do Personagem 
 
-
-            // Menu: seleção
-            else if (menuSelecao.Equals("[menu] C: Câmera"))
-            {
-                camera.MenuTecla(e.Key, menuEixoSelecao, deslocamento);
-                Console.WriteLine(camera.Eye);
-            }
-            else if (menuSelecao.Equals("[menu] O: Objeto"))
-            {
-                if (objetoSelecionado != null) objetoSelecionado.MenuTecla(e.Key, menuEixoSelecao, deslocamento, bBoxDesenhar);
-                else Console.WriteLine(" ... Objeto NÃO selecionado.");
-            }
-
             else
                 Console.WriteLine(" __ Tecla não implementada.");
 
@@ -274,8 +277,8 @@ namespace gcgcg
         static void Main(string[] args)
         {
             ToolkitOptions.Default.EnableHighResolution = false;
-            Mundo window = Mundo.GetInstance(600, 600);
-            window.Title = "CG_N4";
+            Mundo window = Mundo.GetInstance(1400, 1000);
+            window.Title = "CG_N4: Fall Guy";
             window.Run(1.0 / 60.0);
         }
     }
