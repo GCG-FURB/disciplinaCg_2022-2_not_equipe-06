@@ -32,12 +32,22 @@ namespace gcgcg
         private float deslocamento = 0;
         private bool bBoxDesenhar = false;
 
+        private Character character;
+
+        //  Controle de movimentação
+        private bool front = false;
+
+        private bool back = true;
+
+        private bool left = false;
+
+        private bool right = false;
+
 #if CG_Privado
     private Cilindro obj_Cilindro;
     private Esfera obj_Esfera;
     private Cone obj_Cone;
 #endif
-        private Character character;
 
         protected override void OnLoad(EventArgs e)
         {
@@ -50,6 +60,9 @@ namespace gcgcg
             character = new Character(objetoId, null);
             objetosLista.Add(character);
             objetoSelecionado = character;
+
+            objetoSelecionado.Translacao(-10, 'z');
+            objetoSelecionado.Rotacao(180, 'y');
 
 #if CG_Privado  //FIXME: arrumar os outros objetos
       objetoId = Utilitario.charProximo(objetoId);
@@ -81,7 +94,7 @@ namespace gcgcg
 
             GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
 
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(camera.Fovy, Width / (float)Height, camera.Near, camera.Far);
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(camera.Fovy, Width / (float)Height, camera.Near, 500.0f);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadMatrix(ref projection);
         }
@@ -94,7 +107,8 @@ namespace gcgcg
         {
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            Matrix4 modelview = Matrix4.LookAt(camera.Eye, camera.At, camera.Up);
+            // Matrix4 modelview = Matrix4.LookAt(camera.Eye, camera.At, camera.Up);
+            Matrix4 modelview = Matrix4.LookAt(new Vector3(-16, 10, -32), camera.At, camera.Up);
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref modelview);
 #if CG_Gizmo
@@ -134,8 +148,92 @@ namespace gcgcg
             else if (e.Key == Key.C) menuSelecao = "[menu] C: Câmera";
             else if (e.Key == Key.O) menuSelecao = "[menu] O: Objeto";
 
+            // Movimentação do Personagem 
+            else if (e.Key == Key.W) // Para frente
+            {
+                front = true;
+                if (left)
+                {
+                    character.Rotacao(-90, 'y');
+                    left = false;
+                }
+                else if (right)
+                {
+                    character.Rotacao(90, 'y');
+                    right = false;
+                }
+                else if (front && back) objetoSelecionado.Rotacao(180, 'y');
+                objetoSelecionado.Translacao(1, 'z');
+                back = false;
+                left = false;
+                right = false;
+            }
+            else if (e.Key == Key.S) // Para trás
+            {
+                back = true;
+                if (left)
+                {
+                    character.Rotacao(90, 'y');
+                    left = false;
+                }
+                else if (right)
+                {
+                    character.Rotacao(-90, 'y');
+                    right = false;
+                }
+                if (back && front) objetoSelecionado.Rotacao(180, 'y');
+                objetoSelecionado.Translacao(-1, 'z');
+                front = false;
+                left = false;
+                right = false;
+            }
+            else if (e.Key == Key.A) // Para esquerda
+            {
+                left = true;
+                if (left && right) objetoSelecionado.Rotacao(180, 'y');
+                else if (left && front)
+                {
+                    objetoSelecionado.Rotacao(90, 'y');
+                    front = false;
+                }
+                else if (left && back)
+                {
+                    objetoSelecionado.Rotacao(-90, 'y');
+                    back = false;
+                }
+                objetoSelecionado.Translacao(1, 'x');
+                right = false;
+                front = false;
+                back = false;
+            }
+            else if (e.Key == Key.D) // Para direita
+            {
+                right = true;
+                if (right && left) objetoSelecionado.Rotacao(-180, 'y');
+                else if (right && front)
+                {
+                    objetoSelecionado.Rotacao(-90, 'y');
+                    front = false;
+                }
+                else if (right && back)
+                {
+                    objetoSelecionado.Rotacao(90, 'y');
+                    back = false;
+                }
+                objetoSelecionado.Translacao(-1, 'x');
+                left = false;
+                front = false;
+                back = false;
+            }
+            // Movimentação do Personagem 
+
+
             // Menu: seleção
-            else if (menuSelecao.Equals("[menu] C: Câmera")) camera.MenuTecla(e.Key, menuEixoSelecao, deslocamento);
+            else if (menuSelecao.Equals("[menu] C: Câmera"))
+            {
+                camera.MenuTecla(e.Key, menuEixoSelecao, deslocamento);
+                Console.WriteLine(camera.Eye);
+            }
             else if (menuSelecao.Equals("[menu] O: Objeto"))
             {
                 if (objetoSelecionado != null) objetoSelecionado.MenuTecla(e.Key, menuEixoSelecao, deslocamento, bBoxDesenhar);
