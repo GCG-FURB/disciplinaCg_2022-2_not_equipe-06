@@ -32,6 +32,12 @@ namespace gcgcg
         private float deslocamento = 0;
         private bool bBoxDesenhar = false;
 
+        private bool firstPerson = true;
+
+        private Vector3 cameraPositionAt;
+
+        private Vector3 cameraPositionEye;
+
         private Character character;
 
         //  Controle de movimentação
@@ -61,8 +67,9 @@ namespace gcgcg
             objetosLista.Add(character);
             objetoSelecionado = character;
 
-            objetoSelecionado.Translacao(-10, 'z');
-            objetoSelecionado.Translacao(11, 'x');
+            // objetoSelecionado.Translacao(-10, 'z');
+            // objetoSelecionado.Translacao(11, 'x');
+            // objetoSelecionado.Escala(4.0f);
             objetoSelecionado.Rotacao(180, 'y');
 
 #if CG_Privado  //FIXME: arrumar os outros objetos
@@ -109,8 +116,20 @@ namespace gcgcg
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             // Matrix4 modelview = Matrix4.LookAt(camera.Eye, camera.At, camera.Up); // Default
-            // Matrix4 modelview = Matrix4.LookAt(new Vector3(-16, 10, -32), camera.At, camera.Up); // DevMode
-            Matrix4 modelview = Matrix4.LookAt(new Vector3(12, 14, -42), new Vector3(21, 5, 11), camera.Up); // GameMode
+
+            if (firstPerson)
+            {
+                cameraPositionAt = new Vector3((float)objetoSelecionado.Matriz.ObterDados()[12], (float)objetoSelecionado.Matriz.ObterDados()[13] + 10, (float)objetoSelecionado.Matriz.ObterDados()[14] - 30);
+                cameraPositionEye = new Vector3((float)objetoSelecionado.Matriz.ObterDados()[12], (float)objetoSelecionado.Matriz.ObterDados()[13] + 5, (float)objetoSelecionado.Matriz.ObterDados()[14] + 5);
+            }
+            else
+            {
+                cameraPositionAt = new Vector3(12, 14, -42);
+                cameraPositionEye = new Vector3(21, 5, 11);
+            }
+
+            Matrix4 modelview = Matrix4.LookAt(cameraPositionAt, cameraPositionEye, camera.Up); // FirtPerson Camera
+
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref modelview);
 #if CG_Gizmo
@@ -243,6 +262,13 @@ namespace gcgcg
             }
             // Movimentação do Personagem 
 
+            // Altera modo de câmera
+            else if (e.Key == Key.V)
+            {
+                firstPerson = !firstPerson;
+            }
+            // Altera modo de câmera
+
             else
                 Console.WriteLine(" __ Tecla não implementada.");
 
@@ -277,7 +303,7 @@ namespace gcgcg
         static void Main(string[] args)
         {
             ToolkitOptions.Default.EnableHighResolution = false;
-            Mundo window = Mundo.GetInstance(1400, 1000);
+            Mundo window = Mundo.GetInstance(600, 600);
             window.Title = "CG_N4: Fall Guy";
             window.Run(1.0 / 60.0);
         }
