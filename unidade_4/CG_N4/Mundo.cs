@@ -40,6 +40,8 @@ namespace gcgcg
 
         private Character character;
 
+        private Cubo cubo;
+
         //  Controle de movimentação
         private bool front = false;
 
@@ -62,15 +64,28 @@ namespace gcgcg
             Console.WriteLine(" --- Ajuda / Teclas: ");
             Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
+            // Mundo
+            objetoId = Utilitario.charProximo(objetoId);
+            cubo = new Cubo(objetoId, null);
+            objetosLista.Add(cubo);
+            objetoSelecionado = cubo;
+
+            objetoSelecionado.EscalaXYZBBox(10, 1, 1);
+            objetoSelecionado.Translacao(45, 'x');
+            objetoSelecionado.Translacao(-10, 'z');
+            // Mundo
+
+            // Personagem
             objetoId = Utilitario.charProximo(objetoId);
             character = new Character(objetoId, null);
             objetosLista.Add(character);
             objetoSelecionado = character;
 
-            // objetoSelecionado.Translacao(-10, 'z');
-            // objetoSelecionado.Translacao(11, 'x');
-            // objetoSelecionado.Escala(4.0f);
+            objetoSelecionado.Translacao(-5, 'z');
+            objetoSelecionado.Translacao(2.5, 'x');
+            objetoSelecionado.Escala(1.5f);
             objetoSelecionado.Rotacao(180, 'y');
+            // Personagem
 
 #if CG_Privado  //FIXME: arrumar os outros objetos
       objetoId = Utilitario.charProximo(objetoId);
@@ -115,20 +130,19 @@ namespace gcgcg
         {
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            // Matrix4 modelview = Matrix4.LookAt(camera.Eye, camera.At, camera.Up); // Default
 
             if (firstPerson)
             {
-                cameraPositionAt = new Vector3((float)objetoSelecionado.Matriz.ObterDados()[12], (float)objetoSelecionado.Matriz.ObterDados()[13] + 10, (float)objetoSelecionado.Matriz.ObterDados()[14] - 30);
-                cameraPositionEye = new Vector3((float)objetoSelecionado.Matriz.ObterDados()[12], (float)objetoSelecionado.Matriz.ObterDados()[13] + 5, (float)objetoSelecionado.Matriz.ObterDados()[14] + 5);
+                cameraPositionEye = new Vector3((float)objetoSelecionado.Matriz.ObterDados()[12], (float)objetoSelecionado.Matriz.ObterDados()[13] + 20, (float)objetoSelecionado.Matriz.ObterDados()[14] - 40);
+                cameraPositionAt = new Vector3((float)objetoSelecionado.Matriz.ObterDados()[12], (float)objetoSelecionado.Matriz.ObterDados()[13], (float)objetoSelecionado.Matriz.ObterDados()[14] + 20);
             }
             else
             {
-                cameraPositionAt = new Vector3(12, 14, -42);
-                cameraPositionEye = new Vector3(21, 5, 11);
+                cameraPositionEye = new Vector3(20, 30, -40);
+                cameraPositionAt = new Vector3(20, 0, 20);
             }
 
-            Matrix4 modelview = Matrix4.LookAt(cameraPositionAt, cameraPositionEye, camera.Up); // FirtPerson Camera
+            Matrix4 modelview = Matrix4.LookAt(cameraPositionEye, cameraPositionAt, camera.Up); // FirtPerson Camera
 
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref modelview);
@@ -166,22 +180,6 @@ namespace gcgcg
             else if (e.Key == Key.Z) menuEixoSelecao = 'z';
             else if (e.Key == Key.Minus) deslocamento--;
             else if (e.Key == Key.Plus) deslocamento++;
-            else if (e.Key == Key.C) menuSelecao = "[menu] C: Câmera";
-            else if (e.Key == Key.O) menuSelecao = "[menu] O: Objeto";
-
-            // Menu: seleção
-            else if (menuSelecao.Equals("[menu] C: Câmera"))
-            {
-                camera.MenuTecla(e.Key, menuEixoSelecao, deslocamento);
-                Console.WriteLine(camera.Eye);
-                Console.WriteLine(camera.At);
-            }
-            else if (menuSelecao.Equals("[menu] O: Objeto"))
-            {
-                if (objetoSelecionado != null) objetoSelecionado.MenuTecla(e.Key, menuEixoSelecao, deslocamento, bBoxDesenhar);
-                else Console.WriteLine(" ... Objeto NÃO selecionado.");
-            }
-            // Menu: seleção
 
             // Movimentação do Personagem 
             else if (e.Key == Key.W) // Para frente
@@ -263,7 +261,7 @@ namespace gcgcg
             // Movimentação do Personagem 
 
             // Altera modo de câmera
-            else if (e.Key == Key.V)
+            else if (e.Key == Key.C)
             {
                 firstPerson = !firstPerson;
             }
@@ -271,9 +269,6 @@ namespace gcgcg
 
             else
                 Console.WriteLine(" __ Tecla não implementada.");
-
-            if (!(e.Key == Key.LShift)) //FIXME: não funciona.
-                Console.WriteLine("__ " + menuSelecao + "[" + deslocamento + "]");
         }
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
