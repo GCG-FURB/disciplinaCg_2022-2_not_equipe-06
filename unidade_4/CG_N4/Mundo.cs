@@ -143,14 +143,10 @@ namespace gcgcg
             right = false;
 
             victory = false;
-            objetoSelecionado.FilhoRemover(crown);
+            objetoSelecionado.FilhoRemover(crown); // TODO - Remover a coroa do personagem quando ele morrer
         }
 
-        public void addCrown()
-        {
-            objetosLista.Add(crown);
-            objetoSelecionado.FilhoAdicionar(crown);
-        }
+        public void addCrown() { objetoSelecionado.FilhoAdicionar(crown); }
 
         protected override void OnResize(EventArgs e)
         {
