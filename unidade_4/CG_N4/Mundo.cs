@@ -31,35 +31,27 @@ namespace gcgcg
         private char menuEixoSelecao = 'z';
         private float deslocamento = 0;
         private bool bBoxDesenhar = false;
+        private bool showGizmo = false;
 
+        //  Character Controler
         private BBox bBox;
-
         private bool firstPerson = true;
-
         private Vector3 cameraPositionAt;
-
         private Vector3 cameraPositionEye;
-
         private Character character;
+        //  Character Controler
 
         //  Controle de movimentação
         private bool front = false;
-
         private bool back = true;
-
         private bool left = false;
-
         private bool right = false;
-
         private Cubo start;
-
         private Cubo map;
-
         private Cubo end;
-
         private int row;
-
         private int col;
+        //  Controle de movimentação
 
         protected override void OnLoad(EventArgs e)
         {
@@ -324,6 +316,11 @@ namespace gcgcg
                 bBoxDesenhar = !bBoxDesenhar;
             }
 
+            else if (e.Key == Key.G)
+            {
+                showGizmo = !showGizmo;
+            }
+
             else
                 Console.WriteLine(" __ Tecla não implementada.");
         }
@@ -335,18 +332,21 @@ namespace gcgcg
 #if CG_Gizmo
         private void Sru3D()
         {
-            GL.LineWidth(1);
-            GL.Begin(PrimitiveType.Lines);
-            // GL.Color3(1.0f,0.0f,0.0f);
-            GL.Color3(Convert.ToByte(255), Convert.ToByte(0), Convert.ToByte(0));
-            GL.Vertex3(0, 0, 0); GL.Vertex3(200, 0, 0);
-            // GL.Color3(0.0f,1.0f,0.0f);
-            GL.Color3(Convert.ToByte(0), Convert.ToByte(255), Convert.ToByte(0));
-            GL.Vertex3(0, 0, 0); GL.Vertex3(0, 200, 0);
-            // GL.Color3(0.0f,0.0f,1.0f);
-            GL.Color3(Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(255));
-            GL.Vertex3(0, 0, 0); GL.Vertex3(0, 0, 200);
-            GL.End();
+            if (showGizmo)
+            {
+                GL.LineWidth(1);
+                GL.Begin(PrimitiveType.Lines);
+                // GL.Color3(1.0f,0.0f,0.0f);
+                GL.Color3(Convert.ToByte(255), Convert.ToByte(0), Convert.ToByte(0));
+                GL.Vertex3(0, 0, 0); GL.Vertex3(200, 0, 0);
+                // GL.Color3(0.0f,1.0f,0.0f);
+                GL.Color3(Convert.ToByte(0), Convert.ToByte(255), Convert.ToByte(0));
+                GL.Vertex3(0, 0, 0); GL.Vertex3(0, 200, 0);
+                // GL.Color3(0.0f,0.0f,1.0f);
+                GL.Color3(Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(255));
+                GL.Vertex3(0, 0, 0); GL.Vertex3(0, 0, 200);
+                GL.End();
+            }
         }
 #endif
     }
