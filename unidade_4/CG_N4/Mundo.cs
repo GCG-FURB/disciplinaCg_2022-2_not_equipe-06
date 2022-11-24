@@ -32,6 +32,8 @@ namespace gcgcg
         private float deslocamento = 0;
         private bool bBoxDesenhar = false;
 
+        private BBox bBox;
+
         private bool firstPerson = true;
 
         private Vector3 cameraPositionAt;
@@ -39,8 +41,6 @@ namespace gcgcg
         private Vector3 cameraPositionEye;
 
         private Character character;
-
-        private Cubo cubo;
 
         //  Controle de movimentação
         private bool front = false;
@@ -51,11 +51,15 @@ namespace gcgcg
 
         private bool right = false;
 
-#if CG_Privado
-    private Cilindro obj_Cilindro;
-    private Esfera obj_Esfera;
-    private Cone obj_Cone;
-#endif
+        private Cubo start;
+
+        private Cubo map;
+
+        private Cubo end;
+
+        private int row;
+
+        private int col;
 
         protected override void OnLoad(EventArgs e)
         {
@@ -64,16 +68,50 @@ namespace gcgcg
             Console.WriteLine(" --- Ajuda / Teclas: ");
             Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
-            // Mundo
+            // Mapa do jogo
+            GL.Color3(1.0f, 0.0f, 0.0f);
             objetoId = Utilitario.charProximo(objetoId);
-            cubo = new Cubo(objetoId, null);
-            objetosLista.Add(cubo);
-            objetoSelecionado = cubo;
-
+            start = new Cubo(objetoId, null);
+            start.ObjetoCor.CorR = 0; start.ObjetoCor.CorG = 0; start.ObjetoCor.CorB = 0;
+            objetosLista.Add(start);
+            objetoSelecionado = start;
             objetoSelecionado.EscalaXYZBBox(10, 1, 1);
             objetoSelecionado.Translacao(45, 'x');
             objetoSelecionado.Translacao(-10, 'z');
-            // Mundo
+
+            objetoSelecionado.ObjetoCor.CorR = 27;
+            objetoSelecionado.ObjetoCor.CorG = 36;
+            objetoSelecionado.ObjetoCor.CorB = 158;
+
+            for (col = 0; col < 100; col += 10)
+            {
+                for (row = 0; row < 100; row += 10)
+                {
+                    objetoId = Utilitario.charProximo(objetoId);
+                    map = new Cubo(objetoId, null);
+                    objetosLista.Add(map);
+                    objetoSelecionado = map;
+                    objetoSelecionado.Translacao(row, 'x');
+                    objetoSelecionado.Translacao(col, 'z');
+
+                    objetoSelecionado.ObjetoCor.CorR = 70;
+                    objetoSelecionado.ObjetoCor.CorG = 25;
+                    objetoSelecionado.ObjetoCor.CorB = 110;
+                }
+            }
+
+            objetoId = Utilitario.charProximo(objetoId);
+            end = new Cubo(objetoId, null);
+            objetosLista.Add(end);
+            objetoSelecionado = end;
+            objetoSelecionado.EscalaXYZBBox(10, 1, 1);
+            objetoSelecionado.Translacao(45, 'x');
+            objetoSelecionado.Translacao(100, 'z');
+
+            objetoSelecionado.ObjetoCor.CorR = 44;
+            objetoSelecionado.ObjetoCor.CorG = 163;
+            objetoSelecionado.ObjetoCor.CorB = 31;
+            // Mapa do jogo
 
             // Personagem
             objetoId = Utilitario.charProximo(objetoId);
@@ -82,42 +120,37 @@ namespace gcgcg
             objetoSelecionado = character;
 
             objetoSelecionado.Translacao(-5, 'z');
-            objetoSelecionado.Translacao(2.5, 'x');
+            objetoSelecionado.Translacao(33.66f, 'x');
             objetoSelecionado.Escala(1.5f);
             objetoSelecionado.Rotacao(180, 'y');
             // Personagem
-
-#if CG_Privado  //FIXME: arrumar os outros objetos
-      objetoId = Utilitario.charProximo(objetoId);
-      obj_Cilindro = new Cilindro(objetoId, null);
-      obj_Cilindro.ObjetoCor.CorR = 177; obj_Cilindro.ObjetoCor.CorG = 166; obj_Cilindro.ObjetoCor.CorB = 136;
-      objetosLista.Add(obj_Cilindro);
-      obj_Cilindro.Translacao(2, 'x');
-
-      objetoId = Utilitario.charProximo(objetoId);
-      obj_Esfera = new Esfera(objetoId, null);
-      obj_Esfera.ObjetoCor.CorR = 177; obj_Esfera.ObjetoCor.CorG = 166; obj_Esfera.ObjetoCor.CorB = 136;
-      objetosLista.Add(obj_Esfera);
-      obj_Esfera.Translacao(4, 'x');
-
-      objetoId = Utilitario.charProximo(objetoId);
-      obj_Cone = new Cone(objetoId, null);
-      obj_Cone.ObjetoCor.CorR = 177; obj_Cone.ObjetoCor.CorG = 166; obj_Cone.ObjetoCor.CorB = 136;
-      objetosLista.Add(obj_Cone);
-      obj_Cone.Translacao(6, 'x');
-#endif
 
             GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
         }
+
+        public void resetCharacter()
+        {
+            objetoSelecionado.Matriz.AtribuirIdentidade();
+            objetoSelecionado.Translacao(-5, 'z');
+            objetoSelecionado.Translacao(33.66f, 'x');
+            objetoSelecionado.Escala(1.5f);
+            objetoSelecionado.Rotacao(180, 'y');
+
+            front = false;
+            back = true;
+            left = false;
+            right = false;
+        }
+
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
 
             GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
 
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(camera.Fovy, Width / (float)Height, camera.Near, 100.0f);
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(camera.Fovy, Width / (float)Height, camera.Near, 200.0f);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadMatrix(ref projection);
         }
@@ -138,11 +171,11 @@ namespace gcgcg
             }
             else
             {
-                cameraPositionEye = new Vector3(20, 30, -40);
-                cameraPositionAt = new Vector3(20, 0, 20);
+                cameraPositionEye = new Vector3(50.5f, 30.0f, -65.0f);
+                cameraPositionAt = new Vector3(50.5f, 0.0f, 20.0f);
             }
 
-            Matrix4 modelview = Matrix4.LookAt(cameraPositionEye, cameraPositionAt, camera.Up); // FirtPerson Camera
+            Matrix4 modelview = Matrix4.LookAt(cameraPositionEye, cameraPositionAt, camera.Up);
 
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref modelview);
@@ -152,20 +185,25 @@ namespace gcgcg
             for (var i = 0; i < objetosLista.Count; i++)
                 objetosLista[i].Desenhar();
             if (bBoxDesenhar && (objetoSelecionado != null))
-                objetoSelecionado.BBox.Desenhar();
+            {
+                bBox = new BBox(
+                    (float)objetoSelecionado.Matriz.ObterDados()[12] - 2.5f,
+                    (float)objetoSelecionado.Matriz.ObterDados()[13],
+                    (float)objetoSelecionado.Matriz.ObterDados()[14] - 2.5f,
+
+                    (float)objetoSelecionado.Matriz.ObterDados()[12] + 2.5f,
+                    (float)objetoSelecionado.Matriz.ObterDados()[13] + 6.0f,
+                    (float)objetoSelecionado.Matriz.ObterDados()[14] + 2.5f);
+                bBox.Desenhar();
+            }
             this.SwapBuffers();
         }
 
         protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
         {
-            // Console.Clear(); //TODO: não funciona.
             if (e.Key == Key.H) Utilitario.AjudaTeclado();
             else if (e.Key == Key.Escape) Exit();
             //--------------------------------------------------------------
-            else if (e.Key == Key.Number9)
-                objetoSelecionado = null;                     // desmacar objeto selecionado
-            else if (e.Key == Key.B)
-                bBoxDesenhar = !bBoxDesenhar;     //FIXME: bBox não está sendo atualizada.
             else if (e.Key == Key.E)
             {
                 Console.WriteLine("--- Objetos / Pontos: ");
@@ -260,12 +298,31 @@ namespace gcgcg
             }
             // Movimentação do Personagem 
 
+            else if (e.Key == Key.P)
+            {
+                Console.WriteLine("Location: " + new Vector3(
+                                                            (float)objetoSelecionado.Matriz.ObterDados()[12],
+                                                            (float)objetoSelecionado.Matriz.ObterDados()[13],
+                                                            (float)objetoSelecionado.Matriz.ObterDados()[14]));
+            }
+
             // Altera modo de câmera
             else if (e.Key == Key.C)
             {
                 firstPerson = !firstPerson;
+
             }
             // Altera modo de câmera
+
+            else if (e.Key == Key.R)
+            {
+                resetCharacter();
+            }
+
+            else if (e.Key == Key.O)
+            {
+                bBoxDesenhar = !bBoxDesenhar;
+            }
 
             else
                 Console.WriteLine(" __ Tecla não implementada.");
