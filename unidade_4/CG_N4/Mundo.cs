@@ -1,12 +1,12 @@
 ﻿#define CG_Gizmo
 // #define CG_Privado
 
+using System.Collections.Generic;
+using OpenTK.Graphics.OpenGL;
+using CG_Biblioteca;
+using OpenTK.Input;
 using System;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using System.Collections.Generic;
-using OpenTK.Input;
-using CG_Biblioteca;
 
 namespace gcgcg
 {
@@ -39,6 +39,8 @@ namespace gcgcg
         private Vector3 cameraPositionAt;
         private Vector3 cameraPositionEye;
         private Character character;
+        private Crown crown;
+        private bool victory = false;
         //  Character Controler
 
         //  Controle de movimentação
@@ -106,9 +108,14 @@ namespace gcgcg
             // Mapa do jogo
 
             // Personagem
+            // Crown
+            objetoId = Utilitario.charProximo(objetoId);
+            crown = new Crown(objetoId, null);
+
             objetoId = Utilitario.charProximo(objetoId);
             character = new Character(objetoId, null);
             objetosLista.Add(character);
+
             objetoSelecionado = character;
 
             objetoSelecionado.Translacao(-5, 'z');
@@ -134,6 +141,15 @@ namespace gcgcg
             back = true;
             left = false;
             right = false;
+
+            victory = false;
+            objetoSelecionado.FilhoRemover(crown);
+        }
+
+        public void addCrown()
+        {
+            objetosLista.Add(crown);
+            objetoSelecionado.FilhoAdicionar(crown);
         }
 
         protected override void OnResize(EventArgs e)
@@ -155,6 +171,10 @@ namespace gcgcg
         {
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            if (objetoSelecionado.Matriz.ObterDados()[14] > 100) victory = true;
+
+            if (victory) addCrown();
 
             if (firstPerson)
             {
@@ -336,13 +356,12 @@ namespace gcgcg
             {
                 GL.LineWidth(1);
                 GL.Begin(PrimitiveType.Lines);
-                // GL.Color3(1.0f,0.0f,0.0f);
                 GL.Color3(Convert.ToByte(255), Convert.ToByte(0), Convert.ToByte(0));
                 GL.Vertex3(0, 0, 0); GL.Vertex3(200, 0, 0);
-                // GL.Color3(0.0f,1.0f,0.0f);
+
                 GL.Color3(Convert.ToByte(0), Convert.ToByte(255), Convert.ToByte(0));
                 GL.Vertex3(0, 0, 0); GL.Vertex3(0, 200, 0);
-                // GL.Color3(0.0f,0.0f,1.0f);
+
                 GL.Color3(Convert.ToByte(0), Convert.ToByte(0), Convert.ToByte(255));
                 GL.Vertex3(0, 0, 0); GL.Vertex3(0, 0, 200);
                 GL.End();
