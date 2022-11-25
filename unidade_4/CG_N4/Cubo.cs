@@ -59,7 +59,8 @@ namespace gcgcg
             GL.Vertex3(base.pontosLista[4].X, base.pontosLista[4].Y, base.pontosLista[4].Z);    // PtoE
             GL.End();
 
-            GL.Begin(PrimitiveType.Lines);
+            GL.LineWidth(4);
+            GL.Begin(PrimitiveType.LineLoop);
             GL.Color3(0.0f, 0.0f, 0.0f);
 
             GL.Vertex3(base.pontosLista[0].X, base.pontosLista[0].Y, base.pontosLista[0].Z);
