@@ -108,10 +108,6 @@ namespace gcgcg
             // Mapa do jogo
 
             // Personagem
-            // Crown
-            objetoId = Utilitario.charProximo(objetoId);
-            crown = new Crown(objetoId, null);
-
             objetoId = Utilitario.charProximo(objetoId);
             character = new Character(objetoId, null);
             objetosLista.Add(character);
@@ -122,6 +118,8 @@ namespace gcgcg
             objetoSelecionado.Translacao(33.66f, 'x');
             objetoSelecionado.Escala(1.5f);
             objetoSelecionado.Rotacao(180, 'y');
+
+            updadeCharacterBBox();
             // Personagem
 
             GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -143,10 +141,34 @@ namespace gcgcg
             right = false;
 
             victory = false;
-            objetoSelecionado.FilhoRemover(crown); // TODO - Remover a coroa do personagem quando ele morrer
+            removeCrown(); // TODO - Remover a coroa do personagem quando ele morrer
         }
 
-        public void addCrown() { objetoSelecionado.FilhoAdicionar(crown); }
+        public void addCrown()
+        {
+            objetoId = Utilitario.charProximo(objetoId);
+            crown = new Crown(objetoId, null);
+            objetoSelecionado.FilhoAdicionar(crown);
+        }
+
+        public void removeCrown()
+        {
+            objetoSelecionado.FilhoRemover(crown);
+        }
+
+        public void updadeCharacterBBox()
+        {
+            bBox = new BBox(
+                (float)objetoSelecionado.Matriz.ObterDados()[12] - 2.5f,
+                (float)objetoSelecionado.Matriz.ObterDados()[13],
+                (float)objetoSelecionado.Matriz.ObterDados()[14] - 2.5f,
+
+                (float)objetoSelecionado.Matriz.ObterDados()[12] + 2.5f,
+                (float)objetoSelecionado.Matriz.ObterDados()[13] + 6.0f,
+                (float)objetoSelecionado.Matriz.ObterDados()[14] + 2.5f);
+            bBox.ProcessarCentro();
+            objetoSelecionado.BBox = bBox;
+        }
 
         protected override void OnResize(EventArgs e)
         {
@@ -168,14 +190,16 @@ namespace gcgcg
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            if (objetoSelecionado.Matriz.ObterDados()[14] > 100) victory = true;
+            updadeCharacterBBox();
+
+            if (objetoSelecionado.BBox.obterCentro.Z > 102) victory = true;
 
             if (victory) addCrown();
 
             if (firstPerson)
             {
-                cameraPositionEye = new Vector3((float)objetoSelecionado.Matriz.ObterDados()[12], (float)objetoSelecionado.Matriz.ObterDados()[13] + 20, (float)objetoSelecionado.Matriz.ObterDados()[14] - 40);
-                cameraPositionAt = new Vector3((float)objetoSelecionado.Matriz.ObterDados()[12], (float)objetoSelecionado.Matriz.ObterDados()[13], (float)objetoSelecionado.Matriz.ObterDados()[14] + 20);
+                cameraPositionEye = new Vector3((float)objetoSelecionado.BBox.obterCentro.X, (float)objetoSelecionado.BBox.obterCentro.Y + 20, (float)objetoSelecionado.BBox.obterCentro.Z - 40);
+                cameraPositionAt = new Vector3((float)objetoSelecionado.BBox.obterCentro.X, (float)objetoSelecionado.BBox.obterCentro.Y, (float)objetoSelecionado.BBox.obterCentro.Z + 20);
             }
             else
             {
@@ -194,16 +218,7 @@ namespace gcgcg
                 objetosLista[i].Desenhar();
             if (bBoxDesenhar && (objetoSelecionado != null))
             {
-                bBox = new BBox(
-                    (float)objetoSelecionado.Matriz.ObterDados()[12] - 2.5f,
-                    (float)objetoSelecionado.Matriz.ObterDados()[13],
-                    (float)objetoSelecionado.Matriz.ObterDados()[14] - 2.5f,
-
-                    (float)objetoSelecionado.Matriz.ObterDados()[12] + 2.5f,
-                    (float)objetoSelecionado.Matriz.ObterDados()[13] + 6.0f,
-                    (float)objetoSelecionado.Matriz.ObterDados()[14] + 2.5f);
-                bBox.ProcessarCentro();
-                bBox.Desenhar();
+                objetoSelecionado.BBox.Desenhar();
             }
             this.SwapBuffers();
         }
@@ -310,9 +325,10 @@ namespace gcgcg
             else if (e.Key == Key.P)
             {
                 Console.WriteLine("Location: " + new Vector3(
-                                                            (float)objetoSelecionado.Matriz.ObterDados()[12],
-                                                            (float)objetoSelecionado.Matriz.ObterDados()[13],
-                                                            (float)objetoSelecionado.Matriz.ObterDados()[14]));
+                                                            (float)objetoSelecionado.BBox.obterCentro.X,
+                                                            (float)objetoSelecionado.BBox.obterCentro.Y,
+                                                            (float)objetoSelecionado.BBox.obterCentro.Z
+                                                            ));
             }
 
             // Altera modo de câmera
