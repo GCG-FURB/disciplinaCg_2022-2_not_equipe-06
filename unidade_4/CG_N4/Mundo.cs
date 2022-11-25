@@ -202,6 +202,7 @@ namespace gcgcg
                     (float)objetoSelecionado.Matriz.ObterDados()[12] + 2.5f,
                     (float)objetoSelecionado.Matriz.ObterDados()[13] + 6.0f,
                     (float)objetoSelecionado.Matriz.ObterDados()[14] + 2.5f);
+                bBox.ProcessarCentro();
                 bBox.Desenhar();
             }
             this.SwapBuffers();
