@@ -66,7 +66,7 @@ namespace gcgcg
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
 
-            GL.Enable(EnableCap.Lighting);
+            // GL.Enable(EnableCap.Lighting);
             GL.Enable(EnableCap.ColorMaterial);
             GL.Enable(EnableCap.Light0);
 
@@ -160,7 +160,7 @@ namespace gcgcg
             right = false;
 
             victory = false;
-            removeCrown(); // TODO - Remover a coroa do personagem quando ele morrer
+            removeCrown();
         }
 
         public void addCrown()
@@ -170,7 +170,7 @@ namespace gcgcg
             objetoSelecionado.FilhoAdicionar(crown);
         }
 
-        public void removeCrown()
+        public void removeCrown() // TODO - FIX Remover a coroa do personagem
         {
             objetoSelecionado.FilhoRemover(crown);
         }
@@ -187,6 +187,13 @@ namespace gcgcg
                 (float)objetoSelecionado.Matriz.ObterDados()[14] + 2.5f);
             bBox.ProcessarCentro();
             objetoSelecionado.BBox = bBox;
+        }
+
+        private Vector3 getCharacterLocation()
+        {
+            return new Vector3((float)objetoSelecionado.BBox.obterCentro.X,
+                               (float)objetoSelecionado.BBox.obterCentro.Y,
+                               (float)objetoSelecionado.BBox.obterCentro.Z);
         }
 
         protected override void OnResize(EventArgs e)
@@ -345,11 +352,7 @@ namespace gcgcg
 
             else if (e.Key == Key.P)
             {
-                Console.WriteLine("Location: " + new Vector3(
-                                                            (float)objetoSelecionado.BBox.obterCentro.X,
-                                                            (float)objetoSelecionado.BBox.obterCentro.Y,
-                                                            (float)objetoSelecionado.BBox.obterCentro.Z
-                                                            ));
+                Console.WriteLine("Location: " + getCharacterLocation());
             }
 
             // Altera modo de câmera
@@ -364,10 +367,6 @@ namespace gcgcg
 
             else
                 Console.WriteLine(" __ Tecla não implementada.");
-        }
-
-        protected override void OnMouseMove(MouseMoveEventArgs e)
-        {
         }
 
 #if CG_Gizmo
