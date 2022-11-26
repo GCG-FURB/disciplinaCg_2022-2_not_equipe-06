@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>CG_N4</RootNamespace>
+    <ApplicationIcon>assets\FallGuy.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,7 @@ Windows
     <PackageReference Include="OpenTK.NetCore" Version="*" />
   -->
     <PackageReference Include="OpenTK.NetCore" Version="*" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,5 +22,7 @@ Windows
        <HintPath>..\..\CG_Biblioteca\bin\Debug\net6.0\CG_Biblioteca.dll</HintPath>
      </Reference>
   </ItemGroup>
+
+
 
 </Project>
