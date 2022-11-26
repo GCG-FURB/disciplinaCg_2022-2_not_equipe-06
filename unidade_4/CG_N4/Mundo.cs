@@ -55,12 +55,42 @@ namespace gcgcg
         private int col;
         //  Controle de movimentação
 
+        // Iluminação
+        private Light light;
+        private bool lighting = true;
+        private ObjetoGeometria lightObj = null;
+        private OpenTK.Color cor = OpenTK.Color.White;
+        // Iluminação
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
             Console.WriteLine(" --- Ajuda / Teclas: ");
             Console.WriteLine(" [  H     ] mostra teclas usadas. ");
+
+            // Enable Light 0 and set its parameters.
+            GL.Light(LightName.Light0, LightParameter.Position, new float[] { 0.0f, 2.0f, 0.0f });
+            GL.Light(LightName.Light0, LightParameter.Ambient, new float[] { 0.3f, 0.3f, 0.3f, 1.0f });
+            GL.Light(LightName.Light0, LightParameter.Diffuse, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+            GL.Light(LightName.Light0, LightParameter.Specular, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+            GL.Light(LightName.Light0, LightParameter.SpotExponent, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+            GL.LightModel(LightModelParameter.LightModelAmbient, new float[] { 0.2f, 0.2f, 0.2f, 1.0f });
+            GL.LightModel(LightModelParameter.LightModelTwoSide, 1);
+            GL.LightModel(LightModelParameter.LightModelLocalViewer, 1);
+            // Enable Light 0 and set its parameters.
+
+            // Use GL.Material to set your object's material parameters.
+            GL.Material(MaterialFace.Front, MaterialParameter.Ambient, new float[] { 0.3f, 0.3f, 0.3f, 1.0f });
+            GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+            GL.Material(MaterialFace.Front, MaterialParameter.Specular, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
+            GL.Material(MaterialFace.Front, MaterialParameter.Emission, new float[] { 0.0f, 0.0f, 0.0f, 1.0f });
+            GL.Material(MaterialFace.Front, MaterialParameter.ColorIndexes, cor);
+            // Use GL.Material to set your object's material parameters.
+
+            GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
 
             // Mapa do jogo
             GL.Color3(1.0f, 0.0f, 0.0f);
@@ -121,10 +151,6 @@ namespace gcgcg
 
             updadeCharacterBBox();
             // Personagem
-
-            GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.CullFace);
         }
 
         public void resetCharacter()
@@ -170,6 +196,33 @@ namespace gcgcg
             objetoSelecionado.BBox = bBox;
         }
 
+        public void callLight()
+        {
+
+            if (lighting)
+            {
+                GL.Enable(EnableCap.Lighting);
+                GL.Enable(EnableCap.Light0);
+                GL.Enable(EnableCap.ColorMaterial);
+            }
+
+            objetoId = Utilitario.charProximo(objetoId);
+            light = new Light(objetoId, null);
+            objetosLista.Add(light);
+            lightObj = light;
+
+            lightObj.Escala(2.5f);
+            lightObj.Translacao(50.5f, 'x');
+            lightObj.Translacao(50.5f, 'z');
+            lightObj.Translacao(20, 'y');
+
+            if (lighting)
+            {
+                GL.Disable(EnableCap.Lighting);
+                GL.Disable(EnableCap.Light0);
+            }
+        }
+
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
@@ -192,6 +245,8 @@ namespace gcgcg
 
             updadeCharacterBBox();
 
+            callLight();
+
             if (objetoSelecionado.BBox.obterCentro.Z > 102) victory = true;
 
             if (victory) addCrown();
@@ -211,6 +266,7 @@ namespace gcgcg
 
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref modelview);
+
 #if CG_Gizmo
             Sru3D();
 #endif
@@ -220,6 +276,7 @@ namespace gcgcg
             {
                 objetoSelecionado.BBox.Desenhar();
             }
+
             this.SwapBuffers();
         }
 
@@ -332,27 +389,18 @@ namespace gcgcg
             }
 
             // Altera modo de câmera
-            else if (e.Key == Key.C)
-            {
-                firstPerson = !firstPerson;
-
-            }
+            else if (e.Key == Key.C) firstPerson = !firstPerson;
             // Altera modo de câmera
 
-            else if (e.Key == Key.R)
-            {
-                resetCharacter();
-            }
+            // iluminacao
+            else if (e.Key == Key.L) lighting = !lighting;
+            // iluminacao
 
-            else if (e.Key == Key.O)
-            {
-                bBoxDesenhar = !bBoxDesenhar;
-            }
+            else if (e.Key == Key.R) resetCharacter();
 
-            else if (e.Key == Key.G)
-            {
-                showGizmo = !showGizmo;
-            }
+            else if (e.Key == Key.O) bBoxDesenhar = !bBoxDesenhar;
+
+            else if (e.Key == Key.G) showGizmo = !showGizmo;
 
             else
                 Console.WriteLine(" __ Tecla não implementada.");
