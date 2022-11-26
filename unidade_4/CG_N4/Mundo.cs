@@ -162,6 +162,13 @@ namespace gcgcg
 
         private void GerarCaminho()
         {
+            var plataformas = objetosLista.OfType<Plataforma>().ToList();
+
+            foreach(var plataforma in plataformas)
+            {
+                objetosLista.Remove(plataforma);
+            }
+
             const int largura = 10;
             const int altura = 10;
             const int caminhos = 3;
@@ -198,7 +205,7 @@ namespace gcgcg
                 for (int row = 0; row < 10; row++)
                 {
                     objetoId = Utilitario.charProximo(objetoId);
-                    Cubo item = new Cubo(objetoId, null);
+                    Plataforma item = new Plataforma(objetoId, null);
                     item.isFalso = caminho[col, row] == 0 ? true : false;
                     objetosLista.Add(item);
                     item.Translacao(row * 10, 'x');
@@ -238,6 +245,7 @@ namespace gcgcg
 
             victory = false;
             removeCrown();
+            GerarCaminho();
         }
 
         public void addCrown()
