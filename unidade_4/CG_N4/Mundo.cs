@@ -69,7 +69,12 @@ namespace gcgcg
             Console.WriteLine(" --- Ajuda / Teclas: ");
             Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
+            GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
+
             // Enable Light 0 and set its parameters.
+            // GL.Light(LightName.Light0, LightParameter.Position, new float[] { 50.5f, 20.0f, 50.5f });
             GL.Light(LightName.Light0, LightParameter.Position, new float[] { 0.0f, 2.0f, 0.0f });
             GL.Light(LightName.Light0, LightParameter.Ambient, new float[] { 0.3f, 0.3f, 0.3f, 1.0f });
             GL.Light(LightName.Light0, LightParameter.Diffuse, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
@@ -87,10 +92,6 @@ namespace gcgcg
             GL.Material(MaterialFace.Front, MaterialParameter.Emission, new float[] { 0.0f, 0.0f, 0.0f, 1.0f });
             GL.Material(MaterialFace.Front, MaterialParameter.ColorIndexes, cor);
             // Use GL.Material to set your object's material parameters.
-
-            GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.CullFace);
 
             // Mapa do jogo
             GL.Color3(1.0f, 0.0f, 0.0f);
@@ -214,7 +215,7 @@ namespace gcgcg
             lightObj.Escala(2.5f);
             lightObj.Translacao(50.5f, 'x');
             lightObj.Translacao(50.5f, 'z');
-            lightObj.Translacao(20, 'y');
+            lightObj.Translacao(20.0f, 'y');
 
             if (lighting)
             {
