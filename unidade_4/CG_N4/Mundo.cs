@@ -49,6 +49,7 @@ namespace gcgcg
         private bool back = true;
         private bool left = false;
         private bool right = false;
+        private bool coroaAdicionada = false;
         private Cubo start;
         private Cubo end;
         private readonly Random random = new Random();
@@ -250,6 +251,13 @@ namespace gcgcg
 
         public void addCrown()
         {
+            if(coroaAdicionada)
+            {
+                return;
+            }
+
+            coroaAdicionada = true;
+
             objetoId = Utilitario.charProximo(objetoId);
             crown = new Crown(objetoId, null);
             objetoSelecionado.FilhoAdicionar(crown);
@@ -257,6 +265,7 @@ namespace gcgcg
 
         public void removeCrown() // TODO - FIX Remover a coroa do personagem
         {
+            coroaAdicionada = false;
             objetoSelecionado.FilhoRemover(crown);
         }
 
