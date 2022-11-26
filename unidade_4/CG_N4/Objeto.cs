@@ -17,6 +17,7 @@ namespace gcgcg
     public float PrimitivaTamanho { get => primitivaTamanho; set => primitivaTamanho = value; }
     private BBox bBox = new BBox();
     public BBox BBox { get => bBox; set => bBox = value; }
+    public IReadOnlyCollection<Objeto> ObterObjetosFilhos() => objetosLista.AsReadOnly();
     private List<Objeto> objetosLista = new List<Objeto>();
 
     private Transformacao4D matriz = new Transformacao4D();

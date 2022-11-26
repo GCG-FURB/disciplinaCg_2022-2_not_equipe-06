@@ -50,9 +50,12 @@ namespace gcgcg
         private bool left = false;
         private bool right = false;
         private bool coroaAdicionada = false;
+        private bool jogando = true;
+        private int tentativas = 3;
         private Cubo start;
         private Cubo end;
         private readonly Random random = new Random();
+
         //  Controle de movimentação
 
         protected override void OnLoad(EventArgs e)
@@ -127,7 +130,7 @@ namespace gcgcg
             objetoSelecionado.Escala(1.5f);
             objetoSelecionado.Rotacao(180, 'y');
 
-            updadeCharacterBBox();
+            updadeCharacterBBox(objetoSelecionado);
             // Personagem
         }
 
@@ -208,25 +211,14 @@ namespace gcgcg
                     objetoId = Utilitario.charProximo(objetoId);
                     Plataforma item = new Plataforma(objetoId, null);
                     item.isFalso = caminho[col, row] == 0 ? true : false;
-                    objetosLista.Add(item);
                     item.Translacao(row * 10, 'x');
                     item.Translacao(col * 10, 'z');
+                    updatePlataformaBBox(item);
+                    objetosLista.Add(item);
 
-                    if(item.isFalso)
-                    {
-                        item.ObjetoCor.CorR = 255;
-                        item.ObjetoCor.CorG = 0;
-                        item.ObjetoCor.CorB = 0;
-                    } else
-                    {
-                        item.ObjetoCor.CorR = 0;
-                        item.ObjetoCor.CorG = 255;
-                        item.ObjetoCor.CorB = 0;
-                    }
-
-                    //item.ObjetoCor.CorR = 70;
-                    //item.ObjetoCor.CorG = 25;
-                    //item.ObjetoCor.CorB = 110;
+                    item.ObjetoCor.CorR = 70;
+                    item.ObjetoCor.CorG = 25;
+                    item.ObjetoCor.CorB = 110;
                 }
             }
         }
@@ -246,7 +238,6 @@ namespace gcgcg
 
             victory = false;
             removeCrown();
-            GerarCaminho();
         }
 
         public void addCrown()
@@ -269,18 +260,33 @@ namespace gcgcg
             objetoSelecionado.FilhoRemover(crown);
         }
 
-        public void updadeCharacterBBox()
+        public void updadeCharacterBBox(Objeto objeto)
         {
             bBox = new BBox(
-                (float)objetoSelecionado.Matriz.ObterDados()[12] - 2.5f,
-                (float)objetoSelecionado.Matriz.ObterDados()[13],
-                (float)objetoSelecionado.Matriz.ObterDados()[14] - 2.5f,
+                (float)objeto.Matriz.ObterDados()[12] - 2.5f,
+                (float)objeto.Matriz.ObterDados()[13],
+                (float)objeto.Matriz.ObterDados()[14] - 2.5f,
 
-                (float)objetoSelecionado.Matriz.ObterDados()[12] + 2.5f,
-                (float)objetoSelecionado.Matriz.ObterDados()[13] + 6.0f,
-                (float)objetoSelecionado.Matriz.ObterDados()[14] + 2.5f);
+                (float)objeto.Matriz.ObterDados()[12] + 2.5f,
+                (float)objeto.Matriz.ObterDados()[13] + 6.0f,
+                (float)objeto.Matriz.ObterDados()[14] + 2.5f);
             bBox.ProcessarCentro();
-            objetoSelecionado.BBox = bBox;
+            objeto.BBox = bBox;
+        }
+
+        private void updatePlataformaBBox(Objeto objeto)
+        {
+            bBox = new BBox(
+                (float)objeto.Matriz.ObterDados()[12],
+                (float)objeto.Matriz.ObterDados()[13],
+                (float)objeto.Matriz.ObterDados()[14],
+
+                (float)objeto.Matriz.ObterDados()[12] + 10,
+                (float)objeto.Matriz.ObterDados()[13],
+                (float)objeto.Matriz.ObterDados()[14] + 10);
+            bBox.ProcessarCentro();
+            objeto.BBox = bBox;
+
         }
 
         private Vector3 getCharacterLocation()
@@ -305,12 +311,60 @@ namespace gcgcg
         {
             base.OnUpdateFrame(e);
         }
+        private void VerificarSePisaEmFalso()
+        {
+            foreach(Plataforma plataforma in objetosLista.OfType<Plataforma>())
+            {
+                BBox plataformaBBox = plataforma.BBox;
+                Ponto4D player = objetoSelecionado.BBox.obterCentro;
+
+                if(
+                    player.X >= plataformaBBox.obterMenorX &&
+                    player.X <= plataformaBBox.obterMaiorX &&
+                    player.Z >= plataformaBBox.obterMenorZ &&
+                    player.Z <= plataformaBBox.obterMaiorZ
+                )
+                {
+
+                    if (plataforma.isFalso)
+                    {
+                        objetosLista.Remove(plataforma);
+                        tentativas--;
+                        resetCharacter();
+
+                        if(tentativas == 0)
+                        {
+                            jogando = false;
+                        }
+                    }
+                    else
+                    {
+                        plataforma.ObjetoCor.CorR = 0;
+                        plataforma.ObjetoCor.CorG = 255;
+                        plataforma.ObjetoCor.CorB = 0;
+                    }
+
+                    return;
+                }
+            }
+        }
+
+        private void DesenharGameOver()
+        {
+
+        }
+
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            updadeCharacterBBox();
+            updadeCharacterBBox(objetoSelecionado);
+            if(jogando) VerificarSePisaEmFalso();
+            if(!jogando)
+            {
+                DesenharGameOver();
+            }
 
             if (objetoSelecionado.BBox.obterCentro.Z > 102) victory = true;
 
@@ -336,7 +390,10 @@ namespace gcgcg
             Sru3D();
 #endif
             for (var i = 0; i < objetosLista.Count; i++)
+            {
                 objetosLista[i].Desenhar();
+            }
+                
             if (bBoxDesenhar && (objetoSelecionado != null))
             {
                 objetoSelecionado.BBox.Desenhar();
@@ -349,6 +406,17 @@ namespace gcgcg
         {
             if (e.Key == Key.H) Utilitario.AjudaTeclado();
             else if (e.Key == Key.Escape) Exit();
+            if (e.Key == Key.R)
+            {
+                jogando = true;
+                tentativas = 3;
+                GerarCaminho();
+                resetCharacter();
+            }
+            if(!jogando)
+            {
+                return;
+            }
             //--------------------------------------------------------------
             else if (e.Key == Key.E)
             {
@@ -452,8 +520,6 @@ namespace gcgcg
             // Altera modo de câmera
             else if (e.Key == Key.C) firstPerson = !firstPerson;
             // Altera modo de câmera
-
-            else if (e.Key == Key.R) resetCharacter();
 
             else if (e.Key == Key.O) bBoxDesenhar = !bBoxDesenhar;
 

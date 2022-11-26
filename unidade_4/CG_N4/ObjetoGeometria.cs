@@ -49,7 +49,43 @@ namespace gcgcg
       pontosLista[posicao] = pto;
     }
 
-    public override string ToString()
+    public (bool EstaDentro, ObjetoGeometria poligonoSelecionado) VerificarSeCoordenadaEstaDentro(Ponto4D coordenada)
+    {
+        var pontos = pontosLista;
+        int paridade = 0;
+        for (int i = 0; i < pontos.Count; i++)
+        {
+            var proximoIndexComparacao = i + 1;
+            if (proximoIndexComparacao == pontos.Count)
+            {
+                proximoIndexComparacao = 0;
+            }
+            var ti = Matematica.InterseccaoScanLine(coordenada.Y, pontos[i].Y, pontos[proximoIndexComparacao].Y);
+            if (ti >= 0 && ti <= 1)
+            {
+                var xi = Matematica.CalculaXiScanLine(pontos[i].X, pontos[proximoIndexComparacao].X, ti);
+                if (xi > coordenada.X)
+                {
+                    paridade++;
+                }
+            }
+        }
+        if (paridade % 2 > 0)
+        {
+            return (true, this);
+        }
+        foreach (ObjetoGeometria objetoGeometria in ObterObjetosFilhos())
+        {
+            var verificacaoEstaDentroDeUmFilho = objetoGeometria.VerificarSeCoordenadaEstaDentro(coordenada);
+            if (verificacaoEstaDentroDeUmFilho.EstaDentro)
+            {
+                return (true, verificacaoEstaDentroDeUmFilho.poligonoSelecionado);
+            }
+        }
+        return (false, null);
+    }
+
+        public override string ToString()
     {
       string retorno;
       retorno = "__ Objeto: " + base.rotulo + "\n";
