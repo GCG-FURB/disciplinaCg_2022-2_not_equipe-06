@@ -7,6 +7,7 @@ using CG_Biblioteca;
 using OpenTK.Input;
 using System;
 using OpenTK;
+using System.Linq;
 
 namespace gcgcg
 {
@@ -49,10 +50,8 @@ namespace gcgcg
         private bool left = false;
         private bool right = false;
         private Cubo start;
-        private Cubo map;
         private Cubo end;
-        private int row;
-        private int col;
+        private readonly Random random = new Random();
         //  Controle de movimentação
 
         protected override void OnLoad(EventArgs e)
@@ -100,22 +99,7 @@ namespace gcgcg
             objetoSelecionado.ObjetoCor.CorG = 36;
             objetoSelecionado.ObjetoCor.CorB = 158;
 
-            for (col = 0; col < 100; col += 10)
-            {
-                for (row = 0; row < 100; row += 10)
-                {
-                    objetoId = Utilitario.charProximo(objetoId);
-                    map = new Cubo(objetoId, null);
-                    objetosLista.Add(map);
-                    objetoSelecionado = map;
-                    objetoSelecionado.Translacao(row, 'x');
-                    objetoSelecionado.Translacao(col, 'z');
-
-                    objetoSelecionado.ObjetoCor.CorR = 70;
-                    objetoSelecionado.ObjetoCor.CorG = 25;
-                    objetoSelecionado.ObjetoCor.CorB = 110;
-                }
-            }
+            GerarCaminho();
 
             objetoId = Utilitario.charProximo(objetoId);
             end = new Cubo(objetoId, null);
@@ -144,6 +128,99 @@ namespace gcgcg
 
             updadeCharacterBBox();
             // Personagem
+        }
+
+        private List<int[]> GerarCaminhoAleatorio(int sizeX, int sizeY, int startX, int endX)
+        {
+            int x = startX;
+            List<int[]> path = new List<int[]>();
+
+
+            for (int y = sizeY - 1; y >= 0; y--)
+            {
+                int upX = y > 0 ? random.Next(0, sizeX) : endX;
+
+                while (x != upX)
+                {
+                    path.Add(new int[] { x, y });
+
+                    if (x < upX)
+                    {
+                        x++;
+                    }
+                    else
+                    {
+                        x--;
+                    }
+                }
+
+                path.Add(new int[] { x, y });
+            }
+
+            return path;
+        }
+
+        private void GerarCaminho()
+        {
+            const int largura = 10;
+            const int altura = 10;
+            const int caminhos = 3;
+
+            int[,] caminho = new int[largura, altura] {
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            };
+
+            for(int i = 0; i < caminhos; i++)
+            {
+                List<int[]> caminhoAleatorio = GerarCaminhoAleatorio(
+                    largura, altura,
+                    random.Next(0, largura - 1),
+                    random.Next(0, largura - 1)
+                );
+
+                foreach(int[] posicao in caminhoAleatorio)
+                {
+                    caminho[posicao[0], posicao[1]] = 1;
+                }
+            }
+
+            for (int col = 0; col < 10; col++)
+            {
+                for (int row = 0; row < 10; row++)
+                {
+                    objetoId = Utilitario.charProximo(objetoId);
+                    Cubo item = new Cubo(objetoId, null);
+                    item.isFalso = caminho[col, row] == 0 ? true : false;
+                    objetosLista.Add(item);
+                    item.Translacao(row * 10, 'x');
+                    item.Translacao(col * 10, 'z');
+
+                    if(item.isFalso)
+                    {
+                        item.ObjetoCor.CorR = 255;
+                        item.ObjetoCor.CorG = 0;
+                        item.ObjetoCor.CorB = 0;
+                    } else
+                    {
+                        item.ObjetoCor.CorR = 0;
+                        item.ObjetoCor.CorG = 255;
+                        item.ObjetoCor.CorB = 0;
+                    }
+
+                    //item.ObjetoCor.CorR = 70;
+                    //item.ObjetoCor.CorG = 25;
+                    //item.ObjetoCor.CorB = 110;
+                }
+            }
         }
 
         public void resetCharacter()
