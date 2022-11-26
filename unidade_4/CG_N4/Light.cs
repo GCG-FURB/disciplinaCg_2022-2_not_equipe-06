@@ -10,7 +10,7 @@ namespace gcgcg
 
         protected override void DesenharObjeto()
         {
-            GL.Color3(OpenTK.Color.White);
+            GL.Color3(1.0f, 1.0f, 1.0f);
             GL.Begin(PrimitiveType.Quads);
 
             // Face da frente

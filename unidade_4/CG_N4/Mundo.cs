@@ -83,7 +83,7 @@ namespace gcgcg
             GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
             GL.Material(MaterialFace.Front, MaterialParameter.Specular, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
             GL.Material(MaterialFace.Front, MaterialParameter.Emission, new float[] { 0.0f, 0.0f, 0.0f, 1.0f });
-            GL.Material(MaterialFace.Front, MaterialParameter.ColorIndexes, OpenTK.Color.White);
+            GL.Material(MaterialFace.Front, MaterialParameter.ColorIndexes, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
             GL.Material(MaterialFace.Front, MaterialParameter.Shininess, 0.001f);
 
             // Mapa do jogo
