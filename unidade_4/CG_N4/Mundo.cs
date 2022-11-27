@@ -394,9 +394,10 @@ namespace gcgcg
             objetosLista.Add(victoryTitle);
 
             victoryOBJ = victoryTitle;
+
             victoryOBJ.Rotacao(180, 'y');
             victoryOBJ.Escala(3);
-            victoryOBJ.Translacao(84, 'x');
+            victoryOBJ.Translacao(getCharacterLocation()[0] + 33.5, 'x');
             victoryOBJ.Translacao(10, 'y');
             victoryOBJ.Translacao(110, 'z');
         }
@@ -413,7 +414,7 @@ namespace gcgcg
                 DesenharGameOver();
             }
 
-            if (objetoSelecionado.BBox.obterCentro.Z > 102) victory = true;
+            if (objetoSelecionado.BBox.obterCentro.Z > 101) victory = true;
 
             if (victory)
             {
