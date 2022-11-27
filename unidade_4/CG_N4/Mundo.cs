@@ -54,6 +54,8 @@ namespace gcgcg
         private int tentativas = 3;
         private Cubo start;
         private Cubo end;
+        private GameOver gameOver;
+        private ObjetoGeometria gameOverOBJ = null;
         private readonly Random random = new Random();
 
         //  Controle de movimentação
@@ -168,7 +170,7 @@ namespace gcgcg
         {
             var plataformas = objetosLista.OfType<Plataforma>().ToList();
 
-            foreach(var plataforma in plataformas)
+            foreach (var plataforma in plataformas)
             {
                 objetosLista.Remove(plataforma);
             }
@@ -190,7 +192,7 @@ namespace gcgcg
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
             };
 
-            for(int i = 0; i < caminhos; i++)
+            for (int i = 0; i < caminhos; i++)
             {
                 List<int[]> caminhoAleatorio = GerarCaminhoAleatorio(
                     largura, altura,
@@ -198,7 +200,7 @@ namespace gcgcg
                     random.Next(0, largura - 1)
                 );
 
-                foreach(int[] posicao in caminhoAleatorio)
+                foreach (int[] posicao in caminhoAleatorio)
                 {
                     caminho[posicao[0], posicao[1]] = 1;
                 }
@@ -238,11 +240,12 @@ namespace gcgcg
 
             victory = false;
             removeCrown();
+            removeGameOver();
         }
 
         public void addCrown()
         {
-            if(coroaAdicionada)
+            if (coroaAdicionada)
             {
                 return;
             }
@@ -254,10 +257,16 @@ namespace gcgcg
             objetoSelecionado.FilhoAdicionar(crown);
         }
 
-        public void removeCrown() // TODO - FIX Remover a coroa do personagem
+        public void removeCrown()
         {
             coroaAdicionada = false;
             objetoSelecionado.FilhoRemover(crown);
+        }
+
+        public void removeGameOver()
+        {
+            objetosLista.Remove(gameOver);
+            firstPerson = true;
         }
 
         public void updadeCharacterBBox(Objeto objeto)
@@ -313,12 +322,12 @@ namespace gcgcg
         }
         private void VerificarSePisaEmFalso()
         {
-            foreach(Plataforma plataforma in objetosLista.OfType<Plataforma>())
+            foreach (Plataforma plataforma in objetosLista.OfType<Plataforma>())
             {
                 BBox plataformaBBox = plataforma.BBox;
                 Ponto4D player = objetoSelecionado.BBox.obterCentro;
 
-                if(
+                if (
                     player.X >= plataformaBBox.obterMenorX &&
                     player.X <= plataformaBBox.obterMaiorX &&
                     player.Z >= plataformaBBox.obterMenorZ &&
@@ -332,7 +341,7 @@ namespace gcgcg
                         tentativas--;
                         resetCharacter();
 
-                        if(tentativas == 0)
+                        if (tentativas == 0)
                         {
                             jogando = false;
                         }
@@ -351,7 +360,19 @@ namespace gcgcg
 
         private void DesenharGameOver()
         {
+            firstPerson = false;
 
+            resetCharacter();
+
+            objetoId = Utilitario.charProximo(objetoId);
+            gameOver = new GameOver(objetoId, null);
+            objetosLista.Add(gameOver);
+
+            gameOverOBJ = gameOver;
+            gameOverOBJ.Rotacao(180, 'y');
+            gameOverOBJ.Escala(4);
+            gameOverOBJ.Translacao(95, 'x');
+            gameOverOBJ.Translacao(20, 'z');
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -360,8 +381,8 @@ namespace gcgcg
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             updadeCharacterBBox(objetoSelecionado);
-            if(jogando) VerificarSePisaEmFalso();
-            if(!jogando)
+            if (jogando) VerificarSePisaEmFalso();
+            if (!jogando)
             {
                 DesenharGameOver();
             }
@@ -393,7 +414,7 @@ namespace gcgcg
             {
                 objetosLista[i].Desenhar();
             }
-                
+
             if (bBoxDesenhar && (objetoSelecionado != null))
             {
                 objetoSelecionado.BBox.Desenhar();
@@ -413,7 +434,7 @@ namespace gcgcg
                 GerarCaminho();
                 resetCharacter();
             }
-            if(!jogando)
+            if (!jogando)
             {
                 return;
             }
