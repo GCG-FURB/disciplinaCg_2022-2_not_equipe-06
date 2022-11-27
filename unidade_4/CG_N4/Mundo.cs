@@ -5,16 +5,15 @@ using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
 using CG_Biblioteca;
 using OpenTK.Input;
-using System;
-using OpenTK;
 using System.Linq;
+using OpenTK;
+using System;
 
 namespace gcgcg
 {
     class Mundo : GameWindow
     {
         private static Mundo instanciaMundo = null;
-
         private Mundo(int width, int height) : base(width, height) { }
 
         public static Mundo GetInstance(int width, int height)
@@ -60,6 +59,8 @@ namespace gcgcg
         private Victory victoryTitle;
         private ObjetoGeometria victoryOBJ = null;
         private readonly Random random = new Random();
+        private List<Vector2> plataformasRemovidas = new List<Vector2>();
+        private bool jaPisou;
 
         //  Controle de movimentação
 
@@ -332,10 +333,23 @@ namespace gcgcg
         }
         private void VerificarSePisaEmFalso()
         {
+            jaPisou = false;
+
             foreach (Plataforma plataforma in objetosLista.OfType<Plataforma>())
             {
+
                 BBox plataformaBBox = plataforma.BBox;
                 Ponto4D player = objetoSelecionado.BBox.obterCentro;
+
+                foreach (var plataformaRemovida in plataformasRemovidas)
+                {
+                    if (distanciaEuclidiana(plataformaRemovida, new Vector2(getCharacterLocation()[0], getCharacterLocation()[2])) < 5)
+                    {
+                        jaPisou = true;
+                        characterFisics();
+                        resetCharacter();
+                    }
+                }
 
                 if (
                     player.X >= plataformaBBox.obterMenorX &&
@@ -344,11 +358,17 @@ namespace gcgcg
                     player.Z <= plataformaBBox.obterMaiorZ
                 )
                 {
-
                     if (plataforma.isFalso)
                     {
-                        objetosLista.Remove(plataforma);
+                        if (!jaPisou)
+                        {
+                            plataformasRemovidas.Add(new Vector2((int)plataformaBBox.obterMaiorX - 5, (int)plataformaBBox.obterMenorZ + 5));
+                            objetosLista.Remove(plataforma);
+                        }
+
                         tentativas--;
+
+                        characterFisics();
                         resetCharacter();
 
                         if (tentativas == 0)
@@ -368,8 +388,14 @@ namespace gcgcg
             }
         }
 
+        private float distanciaEuclidiana(Vector2 a, Vector2 b)
+        {
+            return (float)Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
+        }
+
         private void DesenharGameOver()
         {
+            plataformasRemovidas.Clear();
             firstPerson = false;
 
             resetCharacter();
@@ -387,6 +413,7 @@ namespace gcgcg
 
         private void DesenharVictory()
         {
+            plataformasRemovidas.Clear();
             firstPerson = true;
 
             objetoId = Utilitario.charProximo(objetoId);
@@ -400,6 +427,16 @@ namespace gcgcg
             victoryOBJ.Translacao(getCharacterLocation()[0] + 33.5, 'x');
             victoryOBJ.Translacao(10, 'y');
             victoryOBJ.Translacao(110, 'z');
+        }
+
+        private void characterFisics() // TODO: Aplicar delay na animação
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                objetoSelecionado.Translacao(-1, 'y');
+                objetoSelecionado.Rotacao(7.2, 'z');
+                objetoSelecionado.Rotacao(7.2, 'x');
+            }
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -454,6 +491,16 @@ namespace gcgcg
             if (bBoxDesenhar && (objetoSelecionado != null))
             {
                 objetoSelecionado.BBox.Desenhar();
+            }
+
+            if (getCharacterLocation()[2] < -10 ||
+                getCharacterLocation()[2] > 110 ||
+                getCharacterLocation()[0] < 0 ||
+                getCharacterLocation()[0] > 100)
+
+            {
+                characterFisics();
+                resetCharacter();
             }
 
             this.SwapBuffers();
@@ -610,7 +657,7 @@ namespace gcgcg
         static void Main(string[] args)
         {
             ToolkitOptions.Default.EnableHighResolution = false;
-            Mundo window = Mundo.GetInstance(600, 600);
+            Mundo window = Mundo.GetInstance(900, 900);
             window.Title = "CG_N4: Fall Guy";
             window.Run(1.0 / 60.0);
         }
