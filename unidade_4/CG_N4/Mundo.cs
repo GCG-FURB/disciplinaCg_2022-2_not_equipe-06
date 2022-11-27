@@ -42,6 +42,7 @@ namespace gcgcg
         private Character character;
         private Crown crown;
         private bool victory = false;
+        private bool victoryRotate = true;
         //  Character Controler
 
         //  Controle de movimentação
@@ -56,6 +57,8 @@ namespace gcgcg
         private Cubo end;
         private GameOver gameOver;
         private ObjetoGeometria gameOverOBJ = null;
+        private Victory victoryTitle;
+        private ObjetoGeometria victoryOBJ = null;
         private readonly Random random = new Random();
 
         //  Controle de movimentação
@@ -239,8 +242,10 @@ namespace gcgcg
             right = false;
 
             victory = false;
+            victoryRotate = true;
             removeCrown();
             removeGameOver();
+            removeVictory();
         }
 
         public void addCrown()
@@ -266,6 +271,11 @@ namespace gcgcg
         public void removeGameOver()
         {
             objetosLista.Remove(gameOver);
+            firstPerson = true;
+        }
+        public void removeVictory()
+        {
+            objetosLista.Remove(victoryTitle);
             firstPerson = true;
         }
 
@@ -375,6 +385,22 @@ namespace gcgcg
             gameOverOBJ.Translacao(20, 'z');
         }
 
+        private void DesenharVictory()
+        {
+            firstPerson = true;
+
+            objetoId = Utilitario.charProximo(objetoId);
+            victoryTitle = new Victory(objetoId, null);
+            objetosLista.Add(victoryTitle);
+
+            victoryOBJ = victoryTitle;
+            victoryOBJ.Rotacao(180, 'y');
+            victoryOBJ.Escala(3);
+            victoryOBJ.Translacao(84, 'x');
+            victoryOBJ.Translacao(10, 'y');
+            victoryOBJ.Translacao(110, 'z');
+        }
+
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
@@ -389,7 +415,16 @@ namespace gcgcg
 
             if (objetoSelecionado.BBox.obterCentro.Z > 102) victory = true;
 
-            if (victory) addCrown();
+            if (victory)
+            {
+                addCrown();
+                if (victoryRotate)
+                {
+                    objetoSelecionado.Rotacao(180, 'y');
+                    DesenharVictory();
+                    victoryRotate = false;
+                }
+            }
 
             if (firstPerson)
             {
@@ -434,10 +469,9 @@ namespace gcgcg
                 GerarCaminho();
                 resetCharacter();
             }
-            if (!jogando)
-            {
-                return;
-            }
+
+            if (!jogando || victory) return;
+
             //--------------------------------------------------------------
             else if (e.Key == Key.E)
             {
